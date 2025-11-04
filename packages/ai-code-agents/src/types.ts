@@ -1,3 +1,5 @@
+import type { FlexibleSchema } from '@ai-sdk/provider-utils';
+import type { ToolCallOptions } from 'ai';
 import * as z from 'zod';
 
 export const ReadFileResult = z.object({
@@ -101,3 +103,49 @@ export interface CommandLineEnvironmentInterface
 export type Environment =
   | FilesystemEnvironmentInterface
   | CommandLineEnvironmentInterface;
+
+// These types must be compatible with or subtypes of the LanguageModelV3ToolResultOutput type from '@ai-sdk/provider'.
+type ModelTextResult = { type: 'text'; value: string };
+type ModelTextPart = { type: 'text'; text: string };
+type ModelMediaPart = { type: 'media'; data: string; mediaType: string };
+export type ModelFormattedToolResult =
+  | ModelTextResult
+  | {
+      type: 'content';
+      value: Array<ModelTextPart | ModelMediaPart>;
+    };
+
+export type ToolExample<ToolInputType, ToolOutputType> = {
+  input: ToolInputType;
+  output: ToolOutputType | string;
+};
+
+// This interface must be compatible with the Tool interface from 'ai'.
+export interface ToolInterface<ToolInputType, ToolOutputType> {
+  get name(): string;
+  get description(): string;
+  get inputSchema(): FlexibleSchema<ToolInputType>;
+  get outputSchema(): FlexibleSchema<ToolOutputType>;
+  execute(
+    input: ToolInputType,
+    options: ToolCallOptions,
+  ): Promise<ToolOutputType>;
+  toModelOutput(output: ToolOutputType): ModelFormattedToolResult;
+  get examples(): Array<ToolExample<ToolInputType, ToolOutputType>>;
+  get needsApproval(): boolean;
+}
+
+export interface EnvironmentToolInterface<
+  ToolInputType,
+  ToolOutputType,
+  EnvironmentType,
+> extends ToolInterface<ToolInputType, ToolOutputType> {
+  get environment(): EnvironmentType;
+}
+
+// Optional constructor parameter for tools.
+export type ToolConfig = {
+  name?: string;
+  description?: string;
+  needsApproval?: boolean;
+};

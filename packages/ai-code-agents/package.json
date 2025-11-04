@@ -1,0 +1,55 @@
+{
+  "name": "ai-code-agents",
+  "version": "0.1.0",
+  "description": "A TypeScript SDK for creating coding agents that can interact with various sandboxed execution environments - built on top of the AI SDK",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "homepage": "https://github.com/felixarntz/ai-code-agents#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixarntz/ai-code-agents.git"
+  },
+  "bugs": {
+    "url": "https://github.com/felixarntz/ai-code-agents/issues"
+  },
+  "keywords": [
+    "ai",
+    "sdk",
+    "coding",
+    "code",
+    "agent",
+    "agentic",
+    "tools",
+    "tool-calling",
+    "environment",
+    "sandbox",
+    "execution"
+  ],
+  "dependencies": {
+    "@ai-sdk/provider-utils": "^3.0.0",
+    "ai": "^5.0.0",
+    "zod": "^4.1.8"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "typescript": "^5.3.3",
+    "vitest": "^3.1.1"
+  },
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:ci": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  }
+}

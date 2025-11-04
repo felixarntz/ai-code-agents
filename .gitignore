@@ -1,0 +1,25 @@
+# Build output
+dist
+
+# Dependency directories
+node_modules
+
+# Environment secrets
+.env
+
+# OS metadata
+.DS_Store
+Thumbs.db
+
+# Test report files
+junit.xml
+packages/*/coverage/
+
+# AI assistant config files
+.claude/
+.codex/
+.cursor/
+.gemini/
+.windsurf/
+CLAUDE.md
+GEMINI.md

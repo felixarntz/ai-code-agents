@@ -50,7 +50,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "lint:ci": "eslint . --max-warnings 0",
-    "format": "prettier --experimental-cli --write .",
+    "format": "prettier --experimental-cli --write packages",
     "test": "pnpm --recursive test",
     "test:ci": "pnpm --recursive test:ci",
     "typecheck": "pnpm --recursive typecheck"

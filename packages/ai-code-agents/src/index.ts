@@ -1,3 +1,4 @@
-export * from './types';
+export * from './environments/docker-environment';
+export * from './environments/mock-filesystem-environment';
 
-export const Greeting = 'Hello from ai-code-agents package!';
+export * from './types';

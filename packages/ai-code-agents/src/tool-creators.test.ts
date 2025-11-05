@@ -80,6 +80,7 @@ describe('createToolsForEnvironment', () => {
     expect(Object.keys(tools)).toEqual([
       'read_file',
       'write_file',
+      'edit_file',
       'move_file',
       'copy_file',
       'list_directory',
@@ -177,6 +178,7 @@ describe('createToolsForNamedEnvironment', () => {
     const expectedNames = [
       'read_file',
       'write_file',
+      'edit_file',
       'move_file',
       'copy_file',
       'list_directory',

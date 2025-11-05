@@ -4,6 +4,7 @@ import type { EnvironmentToolBase } from './tools/environment-tool-base';
 import { ReadFileTool, ReadFileToolName } from './tools/read-file-tool';
 import { WriteFileTool, WriteFileToolName } from './tools/write-file-tool';
 import { DeleteFileTool, DeleteFileToolName } from './tools/delete-file-tool';
+import { EditFileTool, EditFileToolName } from './tools/edit-file-tool';
 import { MoveFileTool, MoveFileToolName } from './tools/move-file-tool';
 import { CopyFileTool, CopyFileToolName } from './tools/copy-file-tool';
 import {
@@ -16,6 +17,7 @@ const availableEnvironmentTools = {
   [ReadFileToolName]: ReadFileTool,
   [WriteFileToolName]: WriteFileTool,
   [DeleteFileToolName]: DeleteFileTool,
+  [EditFileToolName]: EditFileTool,
   [MoveFileToolName]: MoveFileTool,
   [CopyFileToolName]: CopyFileTool,
   [ListDirectoryToolName]: ListDirectoryTool,
@@ -26,6 +28,7 @@ type EnvironmentToolClasses = {
   [ReadFileToolName]: ReadFileTool;
   [WriteFileToolName]: WriteFileTool;
   [DeleteFileToolName]: DeleteFileTool;
+  [EditFileToolName]: EditFileTool;
   [MoveFileToolName]: MoveFileTool;
   [CopyFileToolName]: CopyFileTool;
   [ListDirectoryToolName]: ListDirectoryTool;

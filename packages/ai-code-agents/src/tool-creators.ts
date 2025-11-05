@@ -7,6 +7,7 @@ import { DeleteFileTool, DeleteFileToolName } from './tools/delete-file-tool';
 import { EditFileTool, EditFileToolName } from './tools/edit-file-tool';
 import { MoveFileTool, MoveFileToolName } from './tools/move-file-tool';
 import { CopyFileTool, CopyFileToolName } from './tools/copy-file-tool';
+import { GlobTool, GlobToolName } from './tools/glob-tool';
 import {
   ListDirectoryTool,
   ListDirectoryToolName,
@@ -20,6 +21,7 @@ const availableEnvironmentTools = {
   [EditFileToolName]: EditFileTool,
   [MoveFileToolName]: MoveFileTool,
   [CopyFileToolName]: CopyFileTool,
+  [GlobToolName]: GlobTool,
   [ListDirectoryToolName]: ListDirectoryTool,
   [RunCommandToolName]: RunCommandTool,
 };
@@ -31,17 +33,20 @@ type EnvironmentToolClasses = {
   [EditFileToolName]: EditFileTool;
   [MoveFileToolName]: MoveFileTool;
   [CopyFileToolName]: CopyFileTool;
+  [GlobToolName]: GlobTool;
   [ListDirectoryToolName]: ListDirectoryTool;
   [RunCommandToolName]: RunCommandTool;
 };
 
 const cliOnlyTools: EnvironmentToolName[] = [
+  GlobToolName,
   ListDirectoryToolName,
   RunCommandToolName,
 ];
 
 const readonlyTools: EnvironmentToolName[] = [
   ReadFileToolName,
+  GlobToolName,
   ListDirectoryToolName,
 ];
 

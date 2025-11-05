@@ -6,6 +6,7 @@ export * from './environments/unsafe-local-environment';
 export * from './tools/copy-file-tool';
 export * from './tools/delete-file-tool';
 export * from './tools/edit-file-tool';
+export * from './tools/glob-tool';
 export * from './tools/list-directory-tool';
 export * from './tools/move-file-tool';
 export * from './tools/read-file-tool';

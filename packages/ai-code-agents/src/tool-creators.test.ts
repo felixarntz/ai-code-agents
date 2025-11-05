@@ -71,7 +71,7 @@ describe('createToolsForEnvironment', () => {
 
   it("should create readonly tools when 'readonly' is specified", () => {
     const tools = createToolsForEnvironment(mockCliEnv, 'readonly');
-    expect(Object.keys(tools)).toEqual(['read_file', 'list_directory']);
+    expect(Object.keys(tools)).toEqual(['read_file', 'glob', 'list_directory']);
     expect(tools['read_file']).toBeInstanceOf(ReadFileTool);
   });
 
@@ -83,6 +83,7 @@ describe('createToolsForEnvironment', () => {
       'edit_file',
       'move_file',
       'copy_file',
+      'glob',
       'list_directory',
     ]);
     expect(tools['write_file']).toBeInstanceOf(WriteFileTool);
@@ -109,6 +110,9 @@ describe('createToolsForEnvironment', () => {
   it('should throw an error for CLI tools in a non-CLI environment', () => {
     expect(() => createToolsForEnvironment(mockFsEnv, ['run_command'])).toThrow(
       'The "run_command" tool can only be used with command-line environments.',
+    );
+    expect(() => createToolsForEnvironment(mockFsEnv, ['glob'])).toThrow(
+      'The "glob" tool can only be used with command-line environments.',
     );
     expect(() =>
       createToolsForEnvironment(mockFsEnv, ['list_directory']),
@@ -167,7 +171,7 @@ describe('createToolsForNamedEnvironment', () => {
       mockCliEnv,
       'readonly',
     );
-    const expectedNames = ['read_file', 'list_directory'].map(
+    const expectedNames = ['read_file', 'glob', 'list_directory'].map(
       (name) => `${name}_in_my_env`,
     );
     expect(Object.keys(tools)).toEqual(expectedNames);
@@ -181,6 +185,7 @@ describe('createToolsForNamedEnvironment', () => {
       'edit_file',
       'move_file',
       'copy_file',
+      'glob',
       'list_directory',
     ].map((name) => `${name}_in_my_env`);
     expect(Object.keys(tools)).toEqual(expectedNames);

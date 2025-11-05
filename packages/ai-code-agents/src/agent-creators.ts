@@ -74,12 +74,12 @@ export function createCodeAgent(
           `No tools definition provided for environment "${environmentName}". Please provide a tools definition for each environment.`,
         );
       }
-      const environmentTools = createToolsForNamedEnvironment(
+      const envTools = createToolsForNamedEnvironment(
         environmentName,
         environment,
         environmentToolsDefinition[environmentName],
       );
-      for (const [toolName, tool] of Object.entries(environmentTools)) {
+      for (const [toolName, tool] of Object.entries(envTools)) {
         if (toolName in environmentTools) {
           throw new Error(
             `Tool name conflict: The tool name "${toolName}" from environment "${environmentName}" is already used by another environment's tools.`,

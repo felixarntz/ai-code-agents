@@ -1,6 +1,6 @@
 # AI Code Agents
 
-A TypeScript SDK for creating AI agents that interact with sandboxed code execution environments. Built on the [Vercel AI SDK](https://sdk.vercel.ai/), it provides a flexible, type-safe framework for building agentic AI systems with comprehensive tool support and environment abstraction.
+A TypeScript SDK for creating AI agents that interact with sandboxed code execution environments. Built on the [Vercel AI SDK](https://ai-sdk.dev/), it provides a flexible, type-safe framework for building agentic AI systems with comprehensive tool support and environment abstraction.
 
 ## Key Features
 
@@ -95,16 +95,16 @@ Tools enable agents to interact with their environments. Each tool has a well-de
 - `basic` - Read and write operations, no deletions or commands
 - `all` - Full access including deletions and command execution
 
-### Agent Implementations
+### Agent Integrations
 
 **Currently Available:**
 
-- Vercel AI SDK - Full support for the AI SDK's agent system
+- [Vercel AI SDK](https://ai-sdk.dev/) - Integration with AI SDK agents
 
 **Planned:**
 
-- Mastra - Integration with Mastra framework
-- AI SDK Tools - Standalone tool execution without full agent system
+- [Mastra](https://mastra.ai/) - Integration with Mastra agents
+- [AI SDK Tools](https://ai-sdk-tools.dev/) - Integration with AI SDK Tools agents
 
 ## Usage Examples
 

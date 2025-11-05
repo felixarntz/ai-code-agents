@@ -8,6 +8,10 @@ import {
   MockFilesystemEnvironmentName,
 } from './environments/mock-filesystem-environment';
 import {
+  NodeFilesystemEnvironment,
+  NodeFilesystemEnvironmentName,
+} from './environments/node-filesystem-environment';
+import {
   UnsafeLocalEnvironment,
   UnsafeLocalEnvironmentName,
 } from './environments/unsafe-local-environment';
@@ -16,12 +20,14 @@ const availableEnvironments = {
   [UnsafeLocalEnvironmentName]: UnsafeLocalEnvironment,
   [DockerEnvironmentName]: DockerEnvironment,
   [MockFilesystemEnvironmentName]: MockFilesystemEnvironment,
+  [NodeFilesystemEnvironmentName]: NodeFilesystemEnvironment,
 };
 
 type EnvironmentClasses = {
   [UnsafeLocalEnvironmentName]: UnsafeLocalEnvironment;
   [DockerEnvironmentName]: DockerEnvironment;
   [MockFilesystemEnvironmentName]: MockFilesystemEnvironment;
+  [NodeFilesystemEnvironmentName]: NodeFilesystemEnvironment;
 };
 
 type EnvironmentConfigOf<T> =

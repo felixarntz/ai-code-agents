@@ -1,5 +1,6 @@
 export * from './environments/docker-environment';
 export * from './environments/mock-filesystem-environment';
+export * from './environments/node-filesystem-environment';
 export * from './environments/unsafe-local-environment';
 
 export * from './tools/copy-file-tool';

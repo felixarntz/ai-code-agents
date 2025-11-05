@@ -1,0 +1,55 @@
+{
+  "name": "@ai-code-agents/cli",
+  "version": "0.1.0",
+  "description": "CLI for exploring the AI Code Agents TypeScript SDK",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "ai-code-agents": "dist/cli.js"
+  },
+  "main": "dist/cli.cjs",
+  "module": "dist/cli.js",
+  "types": "dist/cli.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "homepage": "https://github.com/felixarntz/ai-code-agents#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixarntz/ai-code-agents.git"
+  },
+  "bugs": {
+    "url": "https://github.com/felixarntz/ai-code-agents/issues"
+  },
+  "keywords": [
+    "ai",
+    "sdk",
+    "coding",
+    "code",
+    "agent",
+    "agentic",
+    "cli"
+  ],
+  "dependencies": {
+    "@commander-js/extra-typings": "^13.0.0",
+    "ai-code-agents": "workspace:*",
+    "commander": "^13.0.0",
+    "dotenv": "^16.6.1"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "typescript": "^5.3.3",
+    "vitest": "^3.1.1"
+  },
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "test": "vitest run",
+    "test:ci": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  }
+}

@@ -101,6 +101,31 @@ importers:
         specifier: ^3.1.1
         version: 3.2.4(@types/node@24.10.0)
 
+  packages/cli:
+    dependencies:
+      '@commander-js/extra-typings':
+        specifier: ^13.0.0
+        version: 13.1.0(commander@13.1.0)
+      ai-code-agents:
+        specifier: workspace:*
+        version: link:../ai-code-agents
+      commander:
+        specifier: ^13.0.0
+        version: 13.1.0
+      dotenv:
+        specifier: ^16.6.1
+        version: 16.6.1
+    devDependencies:
+      tsup:
+        specifier: ^8.5.0
+        version: 8.5.0(postcss@8.5.6)(typescript@5.9.3)
+      typescript:
+        specifier: ^5.3.3
+        version: 5.9.3
+      vitest:
+        specifier: ^3.1.1
+        version: 3.2.4(@types/node@24.10.0)
+
 packages:
 
   '@ai-sdk/gateway@2.0.6':

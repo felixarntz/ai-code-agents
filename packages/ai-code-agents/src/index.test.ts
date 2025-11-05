@@ -30,4 +30,31 @@ describe('index', () => {
       expect(actualExportNames).toContain(expectedExport);
     }
   });
+
+  it('should export all environment classes and name constants from the environments directory', () => {
+    const environmentsDir = path.resolve(__dirname, 'environments');
+    const environmentFiles = fs
+      .readdirSync(environmentsDir)
+      .filter(
+        (file) =>
+          file.endsWith('.ts') &&
+          !file.endsWith('.test.ts') &&
+          !file.includes('-base'),
+      );
+
+    const expectedExports = environmentFiles.flatMap((file) => {
+      const environmentNamePascalCase = file
+        .replace('.ts', '')
+        .split('-')
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join('');
+      return [environmentNamePascalCase, `${environmentNamePascalCase}Name`];
+    });
+
+    const actualExportNames = Object.keys(indexExports);
+
+    for (const expectedExport of expectedExports) {
+      expect(actualExportNames).toContain(expectedExport);
+    }
+  });
 });

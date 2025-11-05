@@ -13,10 +13,14 @@ A TypeScript SDK for creating AI agents that interact with sandboxed code execut
 
 ## Installation
 
-You will need Node.js 20+ and npm or another package manager installed on your local machine.
+You will need:
+
+- Node.js 20+
+- `npm` or another package manager
+- AI SDK v5+ and zod v4+ (see below)
 
 ```bash
-npm install ai-code-agents
+npm install ai-code-agents ai zod
 ```
 
 ## Quick Start

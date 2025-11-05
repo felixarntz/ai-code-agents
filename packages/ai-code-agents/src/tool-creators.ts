@@ -11,6 +11,10 @@ import {
   ReadManyFilesTool,
   ReadManyFilesToolName,
 } from './tools/read-many-files-tool';
+import {
+  GetProjectFileStructureTool,
+  GetProjectFileStructureToolName,
+} from './tools/get-project-file-structure-tool';
 import { GlobTool, GlobToolName } from './tools/glob-tool';
 import {
   ListDirectoryTool,
@@ -26,6 +30,7 @@ const availableEnvironmentTools = {
   [MoveFileToolName]: MoveFileTool,
   [CopyFileToolName]: CopyFileTool,
   [ReadManyFilesToolName]: ReadManyFilesTool,
+  [GetProjectFileStructureToolName]: GetProjectFileStructureTool,
   [GlobToolName]: GlobTool,
   [ListDirectoryToolName]: ListDirectoryTool,
   [RunCommandToolName]: RunCommandTool,
@@ -39,12 +44,14 @@ type EnvironmentToolClasses = {
   [MoveFileToolName]: MoveFileTool;
   [CopyFileToolName]: CopyFileTool;
   [ReadManyFilesToolName]: ReadManyFilesTool;
+  [GetProjectFileStructureToolName]: GetProjectFileStructureTool;
   [GlobToolName]: GlobTool;
   [ListDirectoryToolName]: ListDirectoryTool;
   [RunCommandToolName]: RunCommandTool;
 };
 
 const cliOnlyTools: EnvironmentToolName[] = [
+  GetProjectFileStructureToolName,
   GlobToolName,
   ListDirectoryToolName,
   RunCommandToolName,
@@ -53,6 +60,7 @@ const cliOnlyTools: EnvironmentToolName[] = [
 const readonlyTools: EnvironmentToolName[] = [
   ReadFileToolName,
   ReadManyFilesToolName,
+  GetProjectFileStructureToolName,
   GlobToolName,
   ListDirectoryToolName,
 ];

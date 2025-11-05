@@ -74,6 +74,7 @@ describe('createToolsForEnvironment', () => {
     expect(Object.keys(tools)).toEqual([
       'read_file',
       'read_many_files',
+      'get_project_file_structure',
       'glob',
       'list_directory',
     ]);
@@ -89,6 +90,7 @@ describe('createToolsForEnvironment', () => {
       'move_file',
       'copy_file',
       'read_many_files',
+      'get_project_file_structure',
       'glob',
       'list_directory',
     ]);
@@ -180,6 +182,7 @@ describe('createToolsForNamedEnvironment', () => {
     const expectedNames = [
       'read_file',
       'read_many_files',
+      'get_project_file_structure',
       'glob',
       'list_directory',
     ].map((name) => `${name}_in_my_env`);
@@ -195,6 +198,7 @@ describe('createToolsForNamedEnvironment', () => {
       'move_file',
       'copy_file',
       'read_many_files',
+      'get_project_file_structure',
       'glob',
       'list_directory',
     ].map((name) => `${name}_in_my_env`);

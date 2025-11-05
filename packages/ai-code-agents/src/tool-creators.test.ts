@@ -71,7 +71,12 @@ describe('createToolsForEnvironment', () => {
 
   it("should create readonly tools when 'readonly' is specified", () => {
     const tools = createToolsForEnvironment(mockCliEnv, 'readonly');
-    expect(Object.keys(tools)).toEqual(['read_file', 'glob', 'list_directory']);
+    expect(Object.keys(tools)).toEqual([
+      'read_file',
+      'read_many_files',
+      'glob',
+      'list_directory',
+    ]);
     expect(tools['read_file']).toBeInstanceOf(ReadFileTool);
   });
 
@@ -83,6 +88,7 @@ describe('createToolsForEnvironment', () => {
       'edit_file',
       'move_file',
       'copy_file',
+      'read_many_files',
       'glob',
       'list_directory',
     ]);
@@ -171,9 +177,12 @@ describe('createToolsForNamedEnvironment', () => {
       mockCliEnv,
       'readonly',
     );
-    const expectedNames = ['read_file', 'glob', 'list_directory'].map(
-      (name) => `${name}_in_my_env`,
-    );
+    const expectedNames = [
+      'read_file',
+      'read_many_files',
+      'glob',
+      'list_directory',
+    ].map((name) => `${name}_in_my_env`);
     expect(Object.keys(tools)).toEqual(expectedNames);
   });
 
@@ -185,6 +194,7 @@ describe('createToolsForNamedEnvironment', () => {
       'edit_file',
       'move_file',
       'copy_file',
+      'read_many_files',
       'glob',
       'list_directory',
     ].map((name) => `${name}_in_my_env`);

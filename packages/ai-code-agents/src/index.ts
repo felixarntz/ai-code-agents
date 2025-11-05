@@ -10,6 +10,7 @@ export * from './tools/glob-tool';
 export * from './tools/list-directory-tool';
 export * from './tools/move-file-tool';
 export * from './tools/read-file-tool';
+export * from './tools/read-many-files-tool';
 export * from './tools/run-command-tool';
 export * from './tools/write-file-tool';
 

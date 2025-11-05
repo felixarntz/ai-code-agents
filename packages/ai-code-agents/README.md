@@ -1,6 +1,6 @@
 # AI Code Agents
 
-A TypeScript SDK for creating AI agents that interact with sandboxed code execution environments. Built on the [Vercel AI SDK](https://ai-sdk.dev/), it provides a flexible, type-safe framework for building agentic AI systems with comprehensive tool support and environment abstraction.
+A TypeScript SDK for creating AI agents that interact with sandboxed code execution environments. Built on the [Vercel AI SDK](https://ai-sdk.dev/), it provides a flexible, type-safe framework for building AI coding agents—for vibe coding, coding assistance, or multi-agentic workflows—with comprehensive tool support and environment abstraction.
 
 ## Key Features
 

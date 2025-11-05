@@ -12,6 +12,7 @@ export * from './tools/read-file-tool';
 export * from './tools/run-command-tool';
 export * from './tools/write-file-tool';
 
+export * from './agent-creators';
 export * from './environment-creators';
 export * from './tool-creators';
 export * from './types';

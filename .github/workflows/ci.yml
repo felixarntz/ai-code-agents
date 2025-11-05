@@ -30,6 +30,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # needed so that cross-dependencies are built before linting
+      - name: Build project
+        run: pnpm build
+
       - name: Run ESLint check
         run: pnpm lint:ci
 
@@ -78,8 +82,12 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # needed so that cross-dependencies are built before type checking
+      - name: Build project
+        run: pnpm build
+
       - name: Run TypeScript type check
-        run: pnpm run typecheck
+        run: pnpm typecheck
 
   unittest_matrix:
     name: 'Unit Test (Vitest) - Node.js ${{ matrix.node-version }}'

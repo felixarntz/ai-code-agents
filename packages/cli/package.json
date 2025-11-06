@@ -1,6 +1,6 @@
 {
   "name": "@ai-code-agents/cli",
-  "version": "0.1.0-beta.1",
+  "version": "0.1.0",
   "description": "CLI for exploring the AI Code Agents TypeScript SDK",
   "license": "MIT",
   "type": "module",

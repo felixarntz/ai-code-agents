@@ -1,5 +1,6 @@
 import { exec } from 'node:child_process';
 import { escapeCommandArg } from '../util/escape-command-arg';
+import { escapeCommand } from '../util/escape-command';
 import { UnixEnvironmentBase } from './unix-environment-base';
 
 export type DockerEnvironmentConfig = {
@@ -49,7 +50,7 @@ export class DockerEnvironment extends UnixEnvironmentBase<DockerEnvironmentConf
   ): Promise<[number, string, string]> {
     return new Promise((resolve) => {
       exec(
-        `docker exec ${this._envConfig.containerId} ${this._commandPrefix}${command}`,
+        `docker exec ${this._envConfig.containerId} sh -c ${escapeCommand(this._commandPrefix + command)}`,
         (error, stdout, stderr) => {
           const exitCode = error ? (error.code ?? 1) : 0;
           resolve([exitCode, stdout, stderr]);

@@ -41,10 +41,11 @@ const agent = createCodeAgent({
   environment,
   environmentToolsDefinition: 'all',
   maxSteps: 10,
+  logStep: (log: string) => console.log(log),
 });
 
 // Run the agent
-const result = await agent.execute({
+const result = await agent.generate({
   prompt: 'Create a simple Node.js HTTP server in server.js',
 });
 
@@ -123,7 +124,7 @@ const environment = createEnvironment('unsafe-local', {
 });
 
 const agent = createCodeAgent({
-  model: anthropic('claude-3-5-sonnet-20241022'),
+  model: anthropic('claude-sonnet-4.5'),
   environment,
   environmentToolsDefinition: 'basic', // Read/write only, no deletions
   maxSteps: 15,
@@ -132,7 +133,7 @@ const agent = createCodeAgent({
   },
 });
 
-const result = await agent.execute({
+const result = await agent.generate({
   prompt: 'Create a Python script that calculates fibonacci numbers',
 });
 ```
@@ -166,7 +167,7 @@ const agent = createCodeAgent({
   maxSteps: 20,
 });
 
-const result = await agent.execute({
+const result = await agent.generate({
   prompt: 'Create a React frontend and Flask backend for a todo app',
 });
 ```
@@ -182,7 +183,7 @@ const environment = createEnvironment('node-filesystem', {
 });
 
 const agent = createCodeAgent({
-  model: google('gemini-2.0-flash-exp'),
+  model: google('gemini-2.5-pro'),
   environment,
   environmentToolsDefinition: [
     'read_file',
@@ -219,7 +220,7 @@ Track agent execution with detailed step logs:
 
 ```typescript
 const agent = createCodeAgent({
-  model: anthropic('claude-3-5-sonnet-20241022'),
+  model: anthropic('claude-sonnet-4.5'),
   environment,
   environmentToolsDefinition: 'all',
   maxSteps: 15,

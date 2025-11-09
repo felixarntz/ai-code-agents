@@ -233,4 +233,4 @@ const agent = createCodeAgent({
 
 ## Contributing
 
-Contributions to the AI Code Agents SDK are welcome and highly appreciated.
+Contributions to the AI Code Agents SDK are welcome and highly appreciated. Please review the [contributing guidelines](https://github.com/felixarntz/ai-code-agents/blob/main/CONTRIBUTING.md) to learn more about how you can contribute.

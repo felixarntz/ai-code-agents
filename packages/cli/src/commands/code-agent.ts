@@ -45,8 +45,7 @@ export const options = [
   },
   {
     argname: '-t, --tools <tools>',
-    description:
-      'ID of the environment, if relevant (e.g. Docker container ID)',
+    description: 'Tools to allow the agent to use in the environment',
     choices: EnvironmentToolSafetyLevels,
     default: 'readonly',
   },

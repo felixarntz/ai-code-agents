@@ -11,6 +11,7 @@ import {
   getOpt,
   type HandlerArgs,
   type OptionsInput,
+  type Option,
 } from '../util/commander';
 import { logger } from '../util/logger';
 import { normalizeAbsolutePath } from '../util/paths';
@@ -19,7 +20,7 @@ import { output } from '../util/output';
 export const name = 'code-agent';
 export const description = 'Runs a code agent to perform a specified task.';
 
-export const options = [
+export const options: Option[] = [
   {
     argname: 'task',
     description: 'Task for the agent',
@@ -47,7 +48,7 @@ export const options = [
     argname: '-t, --tools <tools>',
     description: 'Tools to allow the agent to use in the environment',
     choices: EnvironmentToolSafetyLevels,
-    default: 'readonly',
+    defaults: 'readonly',
   },
   {
     argname: '-i, --environment-id <environment-id>',

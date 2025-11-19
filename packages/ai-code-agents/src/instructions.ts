@@ -95,18 +95,8 @@ export function formatExampleForInstructions<ToolInputType, ToolOutputType>(
   toolName: string,
   example: ToolExample<ToolInputType, ToolOutputType>,
 ): string {
-  const input: string | number =
-    typeof example.input === 'undefined'
-      ? ''
-      : typeof example.input === 'string' || typeof example.input === 'number'
-        ? example.input
-        : JSON.stringify(example.input, null, 2);
-  const output: string | number =
-    typeof example.output === 'undefined'
-      ? ''
-      : typeof example.output === 'string' || typeof example.output === 'number'
-        ? example.output
-        : JSON.stringify(example.output, null, 2);
+  const input = formatValueForExample(example.input);
+  const output = formatValueForExample(example.output);
 
   if (output === '') {
     return `<example>
@@ -124,6 +114,28 @@ ${toolName}(${input})
 ${output}
 </tool_response>
 </example>`;
+}
+
+/**
+ * Formats a value for inclusion in a tool example.
+ *
+ * @param value - The value to format.
+ * @returns The formatted value as a string.
+ */
+function formatValueForExample(value: unknown): string {
+  if (typeof value === 'undefined') {
+    return '';
+  }
+  if (typeof value === 'string') {
+    return `"${value}"`;
+  }
+  if (typeof value === 'number') {
+    return value.toString();
+  }
+  if (typeof value === 'boolean') {
+    return value ? 'true' : 'false';
+  }
+  return JSON.stringify(value, null, 2);
 }
 
 /**

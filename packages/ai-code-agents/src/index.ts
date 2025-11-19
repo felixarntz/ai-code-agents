@@ -14,6 +14,7 @@ export * from './tools/delete-file-tool';
 export * from './tools/edit-file-tool';
 export * from './tools/get-project-file-structure-tool';
 export * from './tools/glob-tool';
+export * from './tools/grep-tool';
 export * from './tools/list-directory-tool';
 export * from './tools/move-file-tool';
 export * from './tools/read-file-tool';

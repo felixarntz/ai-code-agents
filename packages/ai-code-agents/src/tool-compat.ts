@@ -61,6 +61,12 @@ import {
   type GlobToolOutput,
 } from './tools/glob-tool';
 import {
+  GrepToolName,
+  type GrepToolConfig,
+  type GrepToolInput,
+  type GrepToolOutput,
+} from './tools/grep-tool';
+import {
   ListDirectoryToolName,
   type ListDirectoryToolConfig,
   type ListDirectoryToolInput,
@@ -209,6 +215,20 @@ export function createGlobTool(
   config?: GlobToolConfig,
 ): Tool<GlobToolInput, GlobToolOutput> {
   return tool(createEnvironmentTool(GlobToolName, environment, config));
+}
+
+/**
+ * Creates a GrepTool instance wrapped as a Tool compatible with the AI SDK.
+ *
+ * @param environment - The environment to create the tool for.
+ * @param config - Optional configuration for the tool.
+ * @returns A Tool instance for searching files with grep.
+ */
+export function createGrepTool(
+  environment: CommandLineEnvironmentInterface,
+  config?: GrepToolConfig,
+): Tool<GrepToolInput, GrepToolOutput> {
+  return tool(createEnvironmentTool(GrepToolName, environment, config));
 }
 
 /**

@@ -21,6 +21,8 @@ A core design principle is **environment abstraction**: all tools are built agai
 **Testing:**
 
 - `pnpm test` - Run tests in all packages
+- `pnpm --filter ai-code-agents test` - Run tests only for the `ai-code-agents` package
+- `pnpm --filter cli test` - Run tests only for the `cli` package
 - `pnpm typecheck` - Run TypeScript type checking in all packages
 
 **Development:**

@@ -16,6 +16,7 @@ import {
   GetProjectFileStructureToolName,
 } from './tools/get-project-file-structure-tool';
 import { GlobTool, GlobToolName } from './tools/glob-tool';
+import { GrepTool, GrepToolName } from './tools/grep-tool';
 import {
   ListDirectoryTool,
   ListDirectoryToolName,
@@ -32,6 +33,7 @@ const availableEnvironmentTools = {
   [ReadManyFilesToolName]: ReadManyFilesTool,
   [GetProjectFileStructureToolName]: GetProjectFileStructureTool,
   [GlobToolName]: GlobTool,
+  [GrepToolName]: GrepTool,
   [ListDirectoryToolName]: ListDirectoryTool,
   [RunCommandToolName]: RunCommandTool,
 };
@@ -46,6 +48,7 @@ type EnvironmentToolClasses = {
   [ReadManyFilesToolName]: ReadManyFilesTool;
   [GetProjectFileStructureToolName]: GetProjectFileStructureTool;
   [GlobToolName]: GlobTool;
+  [GrepToolName]: GrepTool;
   [ListDirectoryToolName]: ListDirectoryTool;
   [RunCommandToolName]: RunCommandTool;
 };
@@ -53,6 +56,7 @@ type EnvironmentToolClasses = {
 const cliOnlyTools: EnvironmentToolName[] = [
   GetProjectFileStructureToolName,
   GlobToolName,
+  GrepToolName,
   ListDirectoryToolName,
   RunCommandToolName,
 ];
@@ -62,6 +66,7 @@ const readonlyTools: EnvironmentToolName[] = [
   ReadManyFilesToolName,
   GetProjectFileStructureToolName,
   GlobToolName,
+  GrepToolName,
   ListDirectoryToolName,
 ];
 

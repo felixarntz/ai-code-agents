@@ -76,6 +76,7 @@ describe('createToolsForEnvironment', () => {
       'read_many_files',
       'get_project_file_structure',
       'glob',
+      'grep',
       'list_directory',
     ]);
     expect(tools['read_file']).toBeInstanceOf(ReadFileTool);
@@ -92,6 +93,7 @@ describe('createToolsForEnvironment', () => {
       'read_many_files',
       'get_project_file_structure',
       'glob',
+      'grep',
       'list_directory',
     ]);
     expect(tools['write_file']).toBeInstanceOf(WriteFileTool);
@@ -121,6 +123,9 @@ describe('createToolsForEnvironment', () => {
     );
     expect(() => createToolsForEnvironment(mockFsEnv, ['glob'])).toThrow(
       'The "glob" tool can only be used with command-line environments.',
+    );
+    expect(() => createToolsForEnvironment(mockFsEnv, ['grep'])).toThrow(
+      'The "grep" tool can only be used with command-line environments.',
     );
     expect(() =>
       createToolsForEnvironment(mockFsEnv, ['list_directory']),
@@ -184,6 +189,7 @@ describe('createToolsForNamedEnvironment', () => {
       'read_many_files',
       'get_project_file_structure',
       'glob',
+      'grep',
       'list_directory',
     ].map((name) => `${name}_in_my_env`);
     expect(Object.keys(tools)).toEqual(expectedNames);
@@ -200,6 +206,7 @@ describe('createToolsForNamedEnvironment', () => {
       'read_many_files',
       'get_project_file_structure',
       'glob',
+      'grep',
       'list_directory',
     ].map((name) => `${name}_in_my_env`);
     expect(Object.keys(tools)).toEqual(expectedNames);

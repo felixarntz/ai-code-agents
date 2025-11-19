@@ -15,6 +15,24 @@ import type { Environment } from './types';
 import { SubmitTool, SubmitToolName } from './tools/submit-tool';
 import { getStepLog } from './util/get-step-log';
 
+// This is how a toolset is defined in v6.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type ToolSet = Record<string, (Tool<never, never> | Tool<any, any> | Tool<any, never> | Tool<never, any>) & Pick<Tool<any, any>, 'execute' | 'onInputAvailable' | 'onInputStart' | 'onInputDelta'>>;
+
+/*
+ * Helpers to detect if we are in v5 (2 generics) or v6 (3 generics).
+ * In v5, the first generic is TOOLS, in v6 the first generic is CALL_OPTIONS and the second is TOOLS.
+ * We check if passing a specific type as the first argument results in it being treated as TOOLS.
+ */
+type CompatibleAgentSettings<TTools extends ToolSet> =
+  AgentSettings<{ _check: Tool }> extends { tools?: { _check: Tool } }
+    ? AgentSettings<TTools> // v5.
+    : AgentSettings<never, TTools>; // v6.
+type CompatibleAgent<TTools extends ToolSet> =
+  Agent<{ _check: Tool }> extends { tools: { _check: Tool } }
+    ? Agent<TTools> // v5.
+    : Agent<never, TTools>; // v6.
+
 export type CodeAgentToolsCreatorConfig =
   | {
       environment: Environment;
@@ -25,7 +43,7 @@ export type CodeAgentToolsCreatorConfig =
       environmentToolsDefinition: Record<string, ToolsDefinition>;
     };
 
-export type CodeAgentCreatorConfig = AgentSettings<Record<string, Tool>> & {
+export type CodeAgentCreatorConfig = CompatibleAgentSettings<ToolSet> & {
   maxSteps: number;
   allowSubmit?: boolean;
   logStep?: (stepLog: string, stepIndex: number) => void;
@@ -33,12 +51,12 @@ export type CodeAgentCreatorConfig = AgentSettings<Record<string, Tool>> & {
 } & (CodeAgentToolsCreatorConfig | Record<string, never>);
 
 type AgentTools = Exclude<
-  AgentSettings<Record<string, Tool>>['tools'],
+  CompatibleAgentSettings<ToolSet>['tools'],
   undefined
 >;
 
 type AgentStopWhen = Exclude<
-  AgentSettings<Record<string, Tool>>['stopWhen'],
+  CompatibleAgentSettings<ToolSet>['stopWhen'],
   undefined
 >;
 
@@ -55,7 +73,7 @@ type FirstFunctionArgument<T> = T extends (arg1: infer U, ...args: any[]) => any
  */
 export function createCodeAgent(
   agentConfig: CodeAgentCreatorConfig,
-): Agent<Record<string, Tool>> {
+): CompatibleAgent<ToolSet> {
   return new Agent(createCodeAgentSettings(agentConfig));
 }
 
@@ -67,7 +85,7 @@ export function createCodeAgent(
  */
 export function createCodeAgentSettings(
   agentConfig: CodeAgentCreatorConfig,
-): AgentSettings<Record<string, Tool>> {
+): CompatibleAgentSettings<ToolSet> {
   const {
     maxSteps,
     allowSubmit,
@@ -76,11 +94,22 @@ export function createCodeAgentSettings(
     tools: originalTools,
     stopWhen: originalStopWhen,
     prepareStep: originalPrepareStep,
-    system: originalSystemInstruction,
     ...remainingConfig
   } = agentConfig;
 
-  let agentSettings: AgentSettings<Record<string, Tool>>;
+  // In AI SDK v6, it's 'instructions', in v5 it's 'system'.
+  let originalInstructions: string | undefined;
+  let originalInstructionsUseSystem = false;
+  if ('instructions' in remainingConfig && typeof remainingConfig['instructions'] === 'string') {
+    originalInstructions = remainingConfig['instructions'];
+    delete remainingConfig['instructions'];
+  } else if ('system' in remainingConfig && typeof remainingConfig['system'] === 'string') {
+    originalInstructions = remainingConfig['system'];
+    originalInstructionsUseSystem = true;
+    delete remainingConfig['system'];
+  }
+
+  let agentSettings: CompatibleAgentSettings<ToolSet>;
   let tools: AgentTools;
   if ('environments' in remainingConfig) {
     const { environments, environmentToolsDefinition, ...agentSettingsInput } =
@@ -142,16 +171,25 @@ export function createCodeAgentSettings(
     ? mergeStopWhen(originalStopWhen, stopWhenCondition)
     : stopWhenCondition;
 
-  const system = !omitAdditionalInstructions
+  const instructions = !omitAdditionalInstructions
     ? mergeSystemInstructions(
-        originalSystemInstruction,
+        originalInstructions,
         getAdditionalInstructions({ maxSteps, allowSubmit, tools }),
       )
-    : originalSystemInstruction;
+    : originalInstructions;
+
+  if (originalInstructionsUseSystem) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore AI SDK v5 compatibility
+    agentSettings.system = instructions;
+  } else {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore AI SDK v6 compatibility
+    agentSettings.instructions = instructions;
+  }
 
   return {
     ...agentSettings,
-    system,
     prepareStep,
     stopWhen,
   };
@@ -176,7 +214,7 @@ export function createCodeAgentTools(
   if ('environments' in agentToolsConfig) {
     const { environments, environmentToolsDefinition } = agentToolsConfig;
 
-    const environmentTools: Record<string, Tool> = {};
+    const environmentTools: ToolSet = {};
     for (const [environmentName, environment] of Object.entries(environments)) {
       if (!(environmentName in environmentToolsDefinition)) {
         throw new Error(
@@ -206,7 +244,7 @@ export function createCodeAgentTools(
   if ('environment' in agentToolsConfig) {
     const { environment, environmentToolsDefinition } = agentToolsConfig;
 
-    const environmentTools: Record<string, Tool> = createToolsForEnvironment(
+    const environmentTools: ToolSet = createToolsForEnvironment(
       environment,
       environmentToolsDefinition,
     );

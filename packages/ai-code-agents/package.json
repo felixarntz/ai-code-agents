@@ -35,7 +35,7 @@
     "execution"
   ],
   "peerDependencies": {
-    "ai": "^5.0.0",
+    "ai": "^6.0.0-beta",
     "zod": "^4.0.0"
   },
   "dependencies": {

@@ -15,22 +15,32 @@ import type { Environment } from './types';
 import { SubmitTool, SubmitToolName } from './tools/submit-tool';
 import { getStepLog } from './util/get-step-log';
 
+export type CodeAgentToolsCreatorConfig =
+  | {
+      environment: Environment;
+      environmentToolsDefinition: ToolsDefinition;
+    }
+  | {
+      environments: Record<string, Environment>;
+      environmentToolsDefinition: Record<string, ToolsDefinition>;
+    };
+
 export type CodeAgentCreatorConfig = AgentSettings<Record<string, Tool>> & {
   maxSteps: number;
   allowSubmit?: boolean;
   logStep?: (stepLog: string, stepIndex: number) => void;
   omitAdditionalInstructions?: boolean;
-} & (
-    | {
-        environment: Environment;
-        environmentToolsDefinition: ToolsDefinition;
-      }
-    | {
-        environments: Record<string, Environment>;
-        environmentToolsDefinition: Record<string, ToolsDefinition>;
-      }
-    | Record<string, never>
-  );
+} & (CodeAgentToolsCreatorConfig | Record<string, never>);
+
+type AgentTools = Exclude<
+  AgentSettings<Record<string, Tool>>['tools'],
+  undefined
+>;
+
+type AgentStopWhen = Exclude<
+  AgentSettings<Record<string, Tool>>['stopWhen'],
+  undefined
+>;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type FirstFunctionArgument<T> = T extends (arg1: infer U, ...args: any[]) => any
@@ -41,11 +51,23 @@ type FirstFunctionArgument<T> = T extends (arg1: infer U, ...args: any[]) => any
  * Creates an AI code agent configured to operate on one or more specified execution environments with tools.
  *
  * @param agentConfig - Configuration options for the code agent, including environments, tools definition, and agent settings.
- * @returns An instance of Agent configured with the specified environment tools and settings.
+ * @returns An agent instance configured with the specified environment tools and settings.
  */
 export function createCodeAgent(
   agentConfig: CodeAgentCreatorConfig,
 ): Agent<Record<string, Tool>> {
+  return new Agent(createCodeAgentSettings(agentConfig));
+}
+
+/**
+ * Creates settings object for an AI code agent configured to operate on one or more specified execution environments with tools.
+ *
+ * @param agentConfig - Configuration options for the code agent, including environments, tools definition, and agent settings.
+ * @returns An agent settings object configured with the specified environment tools and settings.
+ */
+export function createCodeAgentSettings(
+  agentConfig: CodeAgentCreatorConfig,
+): AgentSettings<Record<string, Tool>> {
   const {
     maxSteps,
     allowSubmit,
@@ -59,52 +81,30 @@ export function createCodeAgent(
   } = agentConfig;
 
   let agentSettings: AgentSettings<Record<string, Tool>>;
-  let environmentTools:
-    | ReturnType<typeof createToolsForEnvironment>
-    | undefined;
+  let tools: AgentTools;
   if ('environments' in remainingConfig) {
     const { environments, environmentToolsDefinition, ...agentSettingsInput } =
       remainingConfig;
     agentSettings = { ...agentSettingsInput };
 
-    environmentTools = {};
-    for (const [environmentName, environment] of Object.entries(environments)) {
-      if (!(environmentName in environmentToolsDefinition)) {
-        throw new Error(
-          `No tools definition provided for environment "${environmentName}". Please provide a tools definition for each environment.`,
-        );
-      }
-      const envTools = createToolsForNamedEnvironment(
-        environmentName,
-        environment,
-        environmentToolsDefinition[environmentName],
-      );
-      for (const [toolName, tool] of Object.entries(envTools)) {
-        if (toolName in environmentTools) {
-          throw new Error(
-            `Tool name conflict: The tool name "${toolName}" from environment "${environmentName}" is already used by another environment's tools.`,
-          );
-        }
-        environmentTools[toolName] = tool;
-      }
-    }
+    tools = createCodeAgentTools(
+      { environments, environmentToolsDefinition },
+      originalTools,
+    );
   } else if ('environment' in remainingConfig) {
     const { environment, environmentToolsDefinition, ...agentSettingsInput } =
       remainingConfig;
     agentSettings = { ...agentSettingsInput };
 
-    environmentTools = createToolsForEnvironment(
-      environment,
-      environmentToolsDefinition,
+    tools = createCodeAgentTools(
+      { environment, environmentToolsDefinition },
+      originalTools,
     );
   } else {
     agentSettings = { ...remainingConfig };
-  }
 
-  const tools =
-    environmentTools && originalTools
-      ? mergeTools(environmentTools, originalTools)
-      : originalTools || environmentTools || {};
+    tools = originalTools || {};
+  }
 
   if (allowSubmit) {
     if (SubmitToolName in tools) {
@@ -149,12 +149,76 @@ export function createCodeAgent(
       )
     : originalSystemInstruction;
 
-  return new Agent({
+  return {
     ...agentSettings,
     system,
     prepareStep,
     stopWhen,
-  });
+  };
+}
+
+/**
+ * Creates agent tools based on the provided configuration.
+ *
+ * This function generates a set of tools for one or more environments, depending on the configuration.
+ * If `environments` is provided, it creates tools for each named environment using the corresponding
+ * tools definition. If `environment` is provided, it creates tools for a single environment.
+ * The generated tools can be merged with optional original tools.
+ *
+ * @param agentToolsConfig - The configuration object specifying environments and their tools definitions.
+ * @param originalTools - Optional existing tools to merge with the newly created environment tools.
+ * @returns An object containing the created agent tools, merged with original tools if provided.
+ */
+export function createCodeAgentTools(
+  agentToolsConfig: CodeAgentToolsCreatorConfig,
+  originalTools?: AgentTools,
+): AgentTools {
+  if ('environments' in agentToolsConfig) {
+    const { environments, environmentToolsDefinition } = agentToolsConfig;
+
+    const environmentTools: Record<string, Tool> = {};
+    for (const [environmentName, environment] of Object.entries(environments)) {
+      if (!(environmentName in environmentToolsDefinition)) {
+        throw new Error(
+          `No tools definition provided for environment "${environmentName}". Please provide a tools definition for each environment.`,
+        );
+      }
+      const envTools = createToolsForNamedEnvironment(
+        environmentName,
+        environment,
+        environmentToolsDefinition[environmentName],
+      );
+      for (const [toolName, tool] of Object.entries(envTools)) {
+        if (toolName in environmentTools) {
+          throw new Error(
+            `Tool name conflict: The tool name "${toolName}" from environment "${environmentName}" is already used by another environment's tools.`,
+          );
+        }
+        environmentTools[toolName] = tool;
+      }
+    }
+
+    return originalTools
+      ? mergeTools(environmentTools, originalTools)
+      : environmentTools;
+  }
+
+  if ('environment' in agentToolsConfig) {
+    const { environment, environmentToolsDefinition } = agentToolsConfig;
+
+    const environmentTools: Record<string, Tool> = createToolsForEnvironment(
+      environment,
+      environmentToolsDefinition,
+    );
+
+    return originalTools
+      ? mergeTools(environmentTools, originalTools)
+      : environmentTools;
+  }
+
+  throw new Error(
+    'No environments provided in agent tools configuration. Please provide either "environment" or "environments".',
+  );
 }
 
 /**
@@ -165,12 +229,9 @@ export function createCodeAgent(
  * @returns A new record containing all tools from both sets.
  */
 function mergeTools(
-  baseTools: Record<string, Tool>,
-  additionalTools: Exclude<
-    AgentSettings<Record<string, Tool>>['tools'],
-    undefined
-  >,
-): Record<string, Tool> {
+  baseTools: AgentTools,
+  additionalTools: AgentTools,
+): AgentTools {
   const tools = { ...baseTools };
   for (const [toolName, tool] of Object.entries(additionalTools)) {
     if (toolName in tools) {
@@ -191,15 +252,9 @@ function mergeTools(
  * @returns A combined stopWhen condition.
  */
 function mergeStopWhen(
-  baseStopWhen: Exclude<
-    AgentSettings<Record<string, Tool>>['stopWhen'],
-    undefined
-  >,
-  additionalStopWhen: Exclude<
-    AgentSettings<Record<string, Tool>>['stopWhen'],
-    undefined
-  >,
-): Exclude<AgentSettings<Record<string, Tool>>['stopWhen'], undefined> {
+  baseStopWhen: AgentStopWhen,
+  additionalStopWhen: AgentStopWhen,
+): AgentStopWhen {
   if (Array.isArray(baseStopWhen)) {
     if (Array.isArray(additionalStopWhen)) {
       return [...baseStopWhen, ...additionalStopWhen];

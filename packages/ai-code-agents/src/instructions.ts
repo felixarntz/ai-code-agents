@@ -2,31 +2,43 @@ import type { Tool } from '@ai-sdk/provider-utils';
 import type { ToolExample } from './types';
 import { SubmitToolName } from './tools/submit-tool';
 
-type AdditionalInstructionsConfig = {
+// See https://github.com/galfrevn/promptsmith.
+type ConstraintType = 'must' | 'must_not' | 'should' | 'should_not';
+type ConstraintsByType = {
+  [key in ConstraintType]?: string[];
+};
+
+type ConstraintsConfig = {
   maxSteps: number;
   allowSubmit?: boolean;
+};
+
+type AdditionalInstructionsConfig = ConstraintsConfig & {
   tools: Record<string, Tool>;
 };
 
 /**
- * Generates additional instructions for the AI model based on the provided configuration.
+ * Generates additional system instructions for the code agent based on the provided configuration.
  *
  * @param config - Configuration object containing maxSteps and tools.
  * @returns A string containing the additional instructions, to append to the system prompt.
  */
 export function getAdditionalInstructions(
   config: AdditionalInstructionsConfig,
-) {
+): string {
   const { maxSteps, allowSubmit, tools } = config;
 
-  const exampleSections: string[] = [];
+  const exampleSections: string[] = [
+    '# Tool Examples',
+    'You have access to several tools to assist you in completing your task. Here are some examples of how to use them:',
+  ];
   for (const [toolName, tool] of Object.entries(tools)) {
     if (
       'examples' in tool &&
       Array.isArray(tool.examples) &&
       tool.examples.length > 0
     ) {
-      let toolSection = `### Tool: \`${toolName}\`\n\n`;
+      let toolSection = `## Tool: \`${toolName}\`\n\n`;
       for (const example of tool.examples) {
         toolSection += formatExampleForInstructions(toolName, example);
       }
@@ -34,49 +46,46 @@ export function getAdditionalInstructions(
     }
   }
 
-  const workflowGuidelines: string[] = [
-    /*
-     * If there are examples, the tool information is already mentioned in a separate Tool Examples section.
-     * Therefore the line below is only relevant if there are no examples.
-     */
-    ...(!exampleSections.length
-      ? [
-          'You have access to several tools to assist you in completing your task.',
-        ]
-      : []),
-    'You must issue tool calls to complete your task. Do not engage with the user directly.',
-    ...(allowSubmit
-      ? [
-          `Once you think you have completed your task, call the \`${SubmitToolName}\` tool to submit your results.`,
-        ]
-      : []),
-    `You have a maximum of ${maxSteps} steps to complete your task.`,
-  ];
-
-  const importantWorkflowGuidelines = `## Important Workflow Guidelines
-
-${workflowGuidelines.map((line) => `- ${line}`).join('\n')}
-
-Remember, you don't get to ask the user any clarifying questions, just use the tools available to complete your task. You're on your own now.
-`;
-
-  if (exampleSections.length) {
-    return (
-      `## Tool Examples
-
-You have access to several tools to assist you in completing your task. Here are some examples of how to use them:
-
-${exampleSections.join('\n\n')}
-
-` + importantWorkflowGuidelines
-    );
+  const constraintSections: string[] = ['# Behavioral Guidelines'];
+  const constraintsByType = getCodeAgentConstraints({ maxSteps, allowSubmit });
+  if (constraintsByType.must && constraintsByType.must.length > 0) {
+    let constraintSection = '## You MUST:\n\n';
+    for (const constraint of constraintsByType.must) {
+      constraintSection += `- ${constraint}\n`;
+    }
+    constraintSections.push(constraintSection.trim());
+  }
+  if (constraintsByType.must_not && constraintsByType.must_not.length > 0) {
+    let constraintSection = '## You MUST NOT:\n\n';
+    for (const constraint of constraintsByType.must_not) {
+      constraintSection += `- ${constraint}\n`;
+    }
+    constraintSections.push(constraintSection.trim());
+  }
+  if (constraintsByType.should && constraintsByType.should.length > 0) {
+    let constraintSection = '## You SHOULD:\n\n';
+    for (const constraint of constraintsByType.should) {
+      constraintSection += `- ${constraint}\n`;
+    }
+    constraintSections.push(constraintSection.trim());
+  }
+  if (constraintsByType.should_not && constraintsByType.should_not.length > 0) {
+    let constraintSection = '## You SHOULD NOT:\n\n';
+    for (const constraint of constraintsByType.should_not) {
+      constraintSection += `- ${constraint}\n`;
+    }
+    constraintSections.push(constraintSection.trim());
   }
 
-  return importantWorkflowGuidelines;
+  const finalReminder = getCodeAgentFinalReminder();
+
+  return [...exampleSections, ...constraintSections, finalReminder].join(
+    '\n\n',
+  );
 }
 
 /**
- * Formats a tool example for inclusion in the model instructions.
+ * Formats a tool example for inclusion in the code agent system instructions.
  *
  * @param toolName - The name of the tool.
  * @param example - The tool example to format.
@@ -115,4 +124,41 @@ ${toolName}(${input})
 ${output}
 </tool_response>
 </example>`;
+}
+
+/**
+ * Generates constraints for the code agent system instructions based on the provided configuration.
+ *
+ * The constraints are formatted in accordance with the PromptSmith framework.
+ * You can pass them to the prompt builder's `withConstraints` method.
+ *
+ * @param config - Configuration object containing maxSteps and allowSubmit.
+ * @returns An object containing constraints to include in the system prompt, categorized by type.
+ */
+export function getCodeAgentConstraints(
+  config: ConstraintsConfig,
+): ConstraintsByType {
+  const { maxSteps, allowSubmit } = config;
+
+  return {
+    must: [
+      'Always issue tool calls to complete your task',
+      ...(allowSubmit
+        ? [
+            `Call the \`${SubmitToolName}\` tool once you think you have completed your task, to submit your results`,
+          ]
+        : []),
+      `Complete your task within ${maxSteps} steps`,
+    ],
+    must_not: ['Engage with the user directly'],
+  };
+}
+
+/**
+ * Returns a final reminder message for the code agent system instructions.
+ *
+ * @returns The reminder string.
+ */
+export function getCodeAgentFinalReminder(): string {
+  return "Remember, you don't get to ask the user any clarifying questions, just use the tools available to complete your task. You're on your own now.";
 }

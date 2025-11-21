@@ -13,13 +13,8 @@ export default defineConfig(
     // Global ignores.
     ignores: [
       'node_modules/*',
-      '.integration-tests/**',
       'eslint.config.js',
       'packages/**/dist/**',
-      'bundle/**',
-      'package/bundle/**',
-      '.integration-tests/**',
-      'dist/**',
     ],
   },
   eslint.configs.recommended,
@@ -166,28 +161,6 @@ export default defineConfig(
     },
     rules: {
       'import/enforce-node-protocol-usage': ['error', 'always'],
-    },
-  },
-
-  // Extra settings for scripts that we run directly with Node.
-  {
-    files: ['./scripts/**/*.js', 'esbuild.config.js'],
-    languageOptions: {
-      globals: {
-        ...globals.node,
-        process: 'readonly',
-        console: 'readonly',
-      },
-    },
-    rules: {
-      '@typescript-eslint/no-unused-vars': [
-        'error',
-        {
-          argsIgnorePattern: '^_',
-          varsIgnorePattern: '^_',
-          caughtErrorsIgnorePattern: '^_',
-        },
-      ],
     },
   },
 

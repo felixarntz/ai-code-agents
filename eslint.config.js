@@ -39,6 +39,9 @@ export default defineConfig(
         ...globals.node,
         ...globals.es2021,
       },
+      parserOptions: {
+        projectService: true,
+      },
     },
     rules: {
       // TypeScript best practices.
@@ -72,6 +75,7 @@ export default defineConfig(
           caughtErrorsIgnorePattern: '^_',
         },
       ],
+      "@typescript-eslint/no-deprecated": "warn",
 
       // Import rules.
       ...importPlugin.configs.recommended.rules,

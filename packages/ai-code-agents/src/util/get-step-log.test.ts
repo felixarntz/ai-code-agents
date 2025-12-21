@@ -22,6 +22,15 @@ const createStepResult = (
     inputTokens: 0,
     outputTokens: 0,
     totalTokens: 0,
+    inputTokenDetails: {
+      noCacheTokens: undefined,
+      cacheReadTokens: undefined,
+      cacheWriteTokens: undefined,
+    },
+    outputTokenDetails: {
+      textTokens: undefined,
+      reasoningTokens: undefined,
+    },
   },
   warnings: undefined,
   request: {},
@@ -46,7 +55,6 @@ describe('getStepLog', () => {
     const stepResult = createStepResult({
       content: [{ type: 'text', text: 'Hello world' }],
       text: 'Hello world',
-      usage: { inputTokens: 10, outputTokens: 5, totalTokens: 15 },
     });
 
     expect(getStepLog(stepResult)).toBe('text: Hello world');
@@ -63,7 +71,6 @@ describe('getStepLog', () => {
         },
       ],
       finishReason: 'tool-calls',
-      usage: { inputTokens: 15, outputTokens: 8, totalTokens: 23 },
     });
 
     expect(getStepLog(stepResult)).toBe(
@@ -82,7 +89,6 @@ describe('getStepLog', () => {
         },
       ],
       finishReason: 'tool-calls',
-      usage: { inputTokens: 20, outputTokens: 10, totalTokens: 30 },
     });
 
     expect(getStepLog(stepResult)).toBe(
@@ -101,7 +107,6 @@ describe('getStepLog', () => {
         },
       ],
       finishReason: 'tool-calls',
-      usage: { inputTokens: 15, outputTokens: 8, totalTokens: 23 },
     });
 
     expect(getStepLog(stepResult)).toBe(
@@ -120,7 +125,6 @@ describe('getStepLog', () => {
           output: 'Sunny, 72°F',
         },
       ],
-      usage: { inputTokens: 15, outputTokens: 12, totalTokens: 27 },
     });
 
     expect(getStepLog(stepResult)).toBe(
@@ -139,7 +143,6 @@ describe('getStepLog', () => {
           output: { temperature: 72, condition: 'sunny', unit: 'F' },
         },
       ],
-      usage: { inputTokens: 18, outputTokens: 15, totalTokens: 33 },
     });
 
     expect(getStepLog(stepResult)).toBe(
@@ -159,7 +162,6 @@ describe('getStepLog', () => {
         },
       ],
       finishReason: 'error',
-      usage: { inputTokens: 15, outputTokens: 5, totalTokens: 20 },
     });
 
     expect(getStepLog(stepResult)).toBe(
@@ -179,7 +181,6 @@ describe('getStepLog', () => {
         },
       ],
       finishReason: 'error',
-      usage: { inputTokens: 16, outputTokens: 6, totalTokens: 22 },
     });
 
     expect(getStepLog(stepResult)).toBe(
@@ -199,7 +200,6 @@ describe('getStepLog', () => {
         },
       ],
       finishReason: 'error',
-      usage: { inputTokens: 17, outputTokens: 7, totalTokens: 24 },
     });
 
     expect(getStepLog(stepResult)).toBe(
@@ -227,7 +227,6 @@ describe('getStepLog', () => {
         { type: 'text', text: 'The weather is sunny with 72°F.' },
       ],
       text: 'Let me check the weather. The weather is sunny with 72°F.',
-      usage: { inputTokens: 25, outputTokens: 20, totalTokens: 45 },
     });
 
     const expected = [
@@ -243,7 +242,6 @@ describe('getStepLog', () => {
   it('should handle empty text content', () => {
     const stepResult = createStepResult({
       content: [{ type: 'text', text: '' }],
-      usage: { inputTokens: 5, outputTokens: 2, totalTokens: 7 },
     });
 
     expect(getStepLog(stepResult)).toBe('text:');
@@ -274,7 +272,6 @@ describe('getStepLog', () => {
         },
       ],
       finishReason: 'error',
-      usage: { inputTokens: 10, outputTokens: 5, totalTokens: 15 },
     });
 
     const expected = [

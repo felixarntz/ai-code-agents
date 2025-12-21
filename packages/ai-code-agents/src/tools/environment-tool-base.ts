@@ -1,4 +1,4 @@
-import type { ToolCallOptions } from 'ai';
+import type { ToolExecutionOptions } from 'ai';
 import type {
   EnvironmentToolInterface,
   ToolConfig as ToolBaseConfig,
@@ -12,11 +12,11 @@ export type EnvironmentToolMetadata<ToolInputType, ToolOutputType> =
  * Base class for an execution environment tool.
  */
 export abstract class EnvironmentToolBase<
-    ToolConfig extends ToolBaseConfig,
-    ToolInputType,
-    ToolOutputType,
-    EnvironmentType,
-  >
+  ToolConfig extends ToolBaseConfig,
+  ToolInputType,
+  ToolOutputType,
+  EnvironmentType,
+>
   extends ToolBase<ToolConfig, ToolInputType, ToolOutputType>
   implements
     EnvironmentToolInterface<ToolInputType, ToolOutputType, EnvironmentType>
@@ -48,12 +48,12 @@ export abstract class EnvironmentToolBase<
    * Executes the tool with the given input.
    *
    * @param input - The input for the tool.
-   * @param _options - Options from the tool call.
+   * @param _options - Options for the tool execution.
    * @returns A promise that resolves to the tool execution result.
    */
   override execute(
     input: ToolInputType,
-    _options: ToolCallOptions,
+    _options: ToolExecutionOptions,
   ): Promise<ToolOutputType> {
     return this.executeForEnvironment(this._environment, input);
   }

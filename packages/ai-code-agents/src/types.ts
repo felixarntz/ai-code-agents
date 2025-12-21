@@ -1,5 +1,5 @@
 import type { FlexibleSchema } from '@ai-sdk/provider-utils';
-import type { ToolCallOptions } from 'ai';
+import type { ToolExecutionOptions } from 'ai';
 import * as z from 'zod';
 
 export const ReadFileResult = z.object({
@@ -95,8 +95,7 @@ export interface FilesystemEnvironmentInterface {
   ): Promise<CopyFileResult>;
 }
 
-export interface CommandLineEnvironmentInterface
-  extends FilesystemEnvironmentInterface {
+export interface CommandLineEnvironmentInterface extends FilesystemEnvironmentInterface {
   runCommand(command: string): Promise<RunCommandResult>;
 }
 
@@ -128,7 +127,7 @@ export interface ToolInterface<ToolInputType, ToolOutputType> {
   get outputSchema(): FlexibleSchema<ToolOutputType>;
   execute(
     input: ToolInputType,
-    options: ToolCallOptions,
+    options: ToolExecutionOptions,
   ): Promise<ToolOutputType>;
   toModelOutput(output: ToolOutputType): ModelFormattedToolResult;
   get examples(): Array<ToolExample<ToolInputType, ToolOutputType>>;

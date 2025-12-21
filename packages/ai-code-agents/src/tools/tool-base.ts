@@ -1,4 +1,4 @@
-import type { ToolCallOptions } from 'ai';
+import type { ToolExecutionOptions } from 'ai';
 import type {
   ToolInterface,
   ToolConfig as ToolBaseConfig,
@@ -24,8 +24,7 @@ export abstract class ToolBase<
   ToolConfig extends ToolBaseConfig,
   ToolInputType,
   ToolOutputType,
-> implements ToolInterface<ToolInputType, ToolOutputType>
-{
+> implements ToolInterface<ToolInputType, ToolOutputType> {
   readonly _toolConfig!: ToolConfig;
   protected readonly _name: string;
   protected readonly _description: string;
@@ -113,12 +112,12 @@ export abstract class ToolBase<
    * Executes the tool with the given input.
    *
    * @param input - The input for the tool.
-   * @param options - Options from the tool call.
+   * @param options - Options for the tool execution.
    * @returns A promise that resolves to the tool execution result.
    */
   abstract execute(
     input: ToolInputType,
-    options: ToolCallOptions,
+    options: ToolExecutionOptions,
   ): Promise<ToolOutputType>;
 
   /**

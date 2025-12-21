@@ -112,7 +112,7 @@ export const handler = async (...handlerArgs: HandlerArgs): Promise<void> => {
     logStep: (log: string) => {
       logger.debug('\n' + log);
     },
-    system,
+    instructions: system,
   });
   const result = await agent.generate({ prompt: task });
   const { text } = result;

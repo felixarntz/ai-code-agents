@@ -1,7 +1,8 @@
 import type { Tool } from '@ai-sdk/provider-utils';
 import {
-  Experimental_Agent as Agent,
-  type Experimental_AgentSettings as AgentSettings,
+  ToolLoopAgent,
+  type ToolLoopAgentSettings,
+  type SystemModelMessage,
   stepCountIs,
   hasToolCall,
 } from 'ai';
@@ -15,6 +16,9 @@ import type { Environment } from './types';
 import { SubmitTool, SubmitToolName } from './tools/submit-tool';
 import { getStepLog } from './util/get-step-log';
 
+type FlexibleAgent = ToolLoopAgent<never, Record<string, Tool>>;
+type FlexibleAgentSettings = ToolLoopAgentSettings<never, Record<string, Tool>>;
+
 export type CodeAgentToolsCreatorConfig =
   | {
       environment: Environment;
@@ -25,20 +29,17 @@ export type CodeAgentToolsCreatorConfig =
       environmentToolsDefinition: Record<string, ToolsDefinition>;
     };
 
-export type CodeAgentCreatorConfig = AgentSettings<Record<string, Tool>> & {
+export type CodeAgentCreatorConfig = FlexibleAgentSettings & {
   maxSteps: number;
   allowSubmit?: boolean;
   logStep?: (stepLog: string, stepIndex: number) => void;
   omitAdditionalInstructions?: boolean;
 } & (CodeAgentToolsCreatorConfig | Record<string, never>);
 
-type AgentTools = Exclude<
-  AgentSettings<Record<string, Tool>>['tools'],
-  undefined
->;
+type FlexibleAgentTools = Exclude<FlexibleAgentSettings['tools'], undefined>;
 
-type AgentStopWhen = Exclude<
-  AgentSettings<Record<string, Tool>>['stopWhen'],
+type FlexibleAgentStopWhen = Exclude<
+  FlexibleAgentSettings['stopWhen'],
   undefined
 >;
 
@@ -55,8 +56,8 @@ type FirstFunctionArgument<T> = T extends (arg1: infer U, ...args: any[]) => any
  */
 export function createCodeAgent(
   agentConfig: CodeAgentCreatorConfig,
-): Agent<Record<string, Tool>> {
-  return new Agent(createCodeAgentSettings(agentConfig));
+): FlexibleAgent {
+  return new ToolLoopAgent(createCodeAgentSettings(agentConfig));
 }
 
 /**
@@ -67,7 +68,7 @@ export function createCodeAgent(
  */
 export function createCodeAgentSettings(
   agentConfig: CodeAgentCreatorConfig,
-): AgentSettings<Record<string, Tool>> {
+): FlexibleAgentSettings {
   const {
     maxSteps,
     allowSubmit,
@@ -76,12 +77,12 @@ export function createCodeAgentSettings(
     tools: originalTools,
     stopWhen: originalStopWhen,
     prepareStep: originalPrepareStep,
-    system: originalSystemInstruction,
+    instructions: originalSystemInstruction,
     ...remainingConfig
   } = agentConfig;
 
-  let agentSettings: AgentSettings<Record<string, Tool>>;
-  let tools: AgentTools;
+  let agentSettings: FlexibleAgentSettings;
+  let tools: FlexibleAgentTools;
   if ('environments' in remainingConfig) {
     const { environments, environmentToolsDefinition, ...agentSettingsInput } =
       remainingConfig;
@@ -142,7 +143,7 @@ export function createCodeAgentSettings(
     ? mergeStopWhen(originalStopWhen, stopWhenCondition)
     : stopWhenCondition;
 
-  const system = !omitAdditionalInstructions
+  const instructions = !omitAdditionalInstructions
     ? mergeSystemInstructions(
         originalSystemInstruction,
         getAdditionalInstructions({ maxSteps, allowSubmit, tools }),
@@ -151,7 +152,7 @@ export function createCodeAgentSettings(
 
   return {
     ...agentSettings,
-    system,
+    instructions,
     prepareStep,
     stopWhen,
   };
@@ -171,8 +172,8 @@ export function createCodeAgentSettings(
  */
 export function createCodeAgentTools(
   agentToolsConfig: CodeAgentToolsCreatorConfig,
-  originalTools?: AgentTools,
-): AgentTools {
+  originalTools?: FlexibleAgentTools,
+): FlexibleAgentTools {
   if ('environments' in agentToolsConfig) {
     const { environments, environmentToolsDefinition } = agentToolsConfig;
 
@@ -229,9 +230,9 @@ export function createCodeAgentTools(
  * @returns A new record containing all tools from both sets.
  */
 function mergeTools(
-  baseTools: AgentTools,
-  additionalTools: AgentTools,
-): AgentTools {
+  baseTools: FlexibleAgentTools,
+  additionalTools: FlexibleAgentTools,
+): FlexibleAgentTools {
   const tools = { ...baseTools };
   for (const [toolName, tool] of Object.entries(additionalTools)) {
     if (toolName in tools) {
@@ -252,9 +253,9 @@ function mergeTools(
  * @returns A combined stopWhen condition.
  */
 function mergeStopWhen(
-  baseStopWhen: AgentStopWhen,
-  additionalStopWhen: AgentStopWhen,
-): AgentStopWhen {
+  baseStopWhen: FlexibleAgentStopWhen,
+  additionalStopWhen: FlexibleAgentStopWhen,
+): FlexibleAgentStopWhen {
   if (Array.isArray(baseStopWhen)) {
     if (Array.isArray(additionalStopWhen)) {
       return [...baseStopWhen, ...additionalStopWhen];
@@ -275,16 +276,35 @@ function mergeStopWhen(
  *
  * If no base system instructions are provided, only the additional instructions are returned.
  *
- * @param baseSystem - The base system instructions, or undefined if none.
+ * @param baseInstructions - The base system instructions, or undefined if none.
  * @param additionalInstructions - The additional instructions to append.
  * @returns The merged system instructions.
  */
 function mergeSystemInstructions(
-  baseSystem: string | undefined,
+  baseInstructions:
+    | string
+    | SystemModelMessage
+    | SystemModelMessage[]
+    | undefined,
   additionalInstructions: string,
-): string {
-  if (baseSystem) {
-    return `${baseSystem.trimEnd()}\n\n${additionalInstructions}`;
+): string | SystemModelMessage | SystemModelMessage[] {
+  if (baseInstructions) {
+    if (Array.isArray(baseInstructions)) {
+      return [
+        ...baseInstructions,
+        {
+          role: 'system',
+          content: additionalInstructions,
+        },
+      ];
+    }
+    if (typeof baseInstructions === 'object') {
+      return {
+        ...baseInstructions,
+        content: `${baseInstructions.content.trimEnd()}\n\n${additionalInstructions}`,
+      };
+    }
+    return `${baseInstructions.trimEnd()}\n\n${additionalInstructions}`;
   }
   return additionalInstructions;
 }

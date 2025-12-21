@@ -1,4 +1,4 @@
-import type { ToolCallOptions } from 'ai';
+import type { ToolExecutionOptions } from 'ai';
 import { z } from 'zod';
 import type {
   ToolConfig,
@@ -48,12 +48,12 @@ export class SubmitTool extends ToolBase<
    * Executes the tool with the given input.
    *
    * @param _ - The input for the tool. Unused.
-   * @param __ - Options from the tool call. Unused.
+   * @param __ - Options for the tool execution. Unused.
    * @returns A promise that resolves to the tool execution result.
    */
   async execute(
     _: SubmitToolInput,
-    __: ToolCallOptions,
+    __: ToolExecutionOptions,
   ): Promise<SubmitToolOutput> {
     return {};
   }

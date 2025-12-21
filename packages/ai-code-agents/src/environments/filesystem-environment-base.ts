@@ -11,9 +11,9 @@ import type {
 /**
  * Base class for a filesystem-based execution environment.
  */
-export abstract class FilesystemEnvironmentBase<EnvironmentConfig>
-  implements FilesystemEnvironmentInterface
-{
+export abstract class FilesystemEnvironmentBase<
+  EnvironmentConfig,
+> implements FilesystemEnvironmentInterface {
   protected _envConfig: EnvironmentConfig;
 
   /**

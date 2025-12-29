@@ -19,6 +19,7 @@ import {
   output,
   normalizeAbsolutePath,
 } from '@felixarntz/cli-utils';
+import { createEnvironmentConfig } from '../util/create-environment-config';
 
 export const name = 'code-agent';
 export const description = 'Runs a code agent to perform a specified task.';
@@ -138,21 +139,4 @@ export const handler = async (...handlerArgs: HandlerArgs): Promise<void> => {
   const { text } = result;
 
   output(text);
-};
-
-const createEnvironmentConfig = (
-  environment: EnvironmentName,
-  directory: string,
-  environmentId?: string,
-) => {
-  const config = {
-    directoryPath: directory,
-  };
-  if (environment === 'docker' && environmentId) {
-    return {
-      ...config,
-      containerId: environmentId,
-    };
-  }
-  return config;
 };

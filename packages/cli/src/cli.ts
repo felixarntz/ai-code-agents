@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 import { program } from '@commander-js/extra-typings';
+import { withOptions, withErrorHandling } from '@felixarntz/cli-utils';
 import dotenv from 'dotenv';
-import { withOptions, withErrorHandling } from './util/commander';
 import {
   name as codeAgentName,
   description as codeAgentDescription,

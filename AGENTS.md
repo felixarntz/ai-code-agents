@@ -158,7 +158,6 @@ This is an overview of the most important files and directories in the project. 
 │   └── cli/                     # CLI application
 │       ├── src/
 │       │   ├── commands/        # CLI command implementations
-│       │   ├── util/            # CLI utilities
 │       │   └── cli.ts
 │       ├── package.json         # Package configuration
 │       ├── tsconfig.json        # TypeScript configuration

@@ -12,10 +12,10 @@ import {
   type HandlerArgs,
   type OptionsInput,
   type Option,
-} from '../util/commander';
-import { logger } from '../util/logger';
-import { normalizeAbsolutePath } from '../util/paths';
-import { output } from '../util/output';
+  logger,
+  output,
+  normalizeAbsolutePath,
+} from '@felixarntz/cli-utils';
 
 export const name = 'code-agent';
 export const description = 'Runs a code agent to perform a specified task.';

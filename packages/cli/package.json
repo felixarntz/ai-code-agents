@@ -36,7 +36,8 @@
   ],
   "dependencies": {
     "@commander-js/extra-typings": "^13.0.0",
-    "ai-code-agents": "workspace:*",
+    "@felixarntz/cli-utils": "^0.1.1",
+    "ai-code-agents": "workspace:^",
     "commander": "^13.0.0",
     "dotenv": "^16.6.1"
   },

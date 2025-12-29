@@ -7,11 +7,14 @@ import {
   type EnvironmentToolSafetyLevel,
 } from 'ai-code-agents';
 import {
-  getArgs,
   getOpt,
   type HandlerArgs,
   type OptionsInput,
   type Option,
+  parseFileOptions,
+  injectFileOptionsForCommander,
+  promptMissingOptions,
+  stripOptionFieldsForCommander,
   logger,
   output,
   normalizeAbsolutePath,
@@ -20,11 +23,10 @@ import {
 export const name = 'code-agent';
 export const description = 'Runs a code agent to perform a specified task.';
 
-export const options: Option[] = [
+const actualOptions: Option[] = [
   {
-    argname: 'task',
-    description: 'Task for the agent',
-    positional: true,
+    argname: '-p, --prompt <prompt>',
+    description: 'Task prompt for the agent',
     required: true,
   },
   {
@@ -61,7 +63,13 @@ export const options: Option[] = [
   },
 ];
 
+export const options = injectFileOptionsForCommander(actualOptions, [
+  'prompt',
+  'system',
+]).map((option) => stripOptionFieldsForCommander(option));
+
 type CommandConfig = {
+  prompt: string;
   environment: EnvironmentName;
   model: string;
   directory: string;
@@ -72,6 +80,7 @@ type CommandConfig = {
 
 const parseOptions = (opt: OptionsInput): CommandConfig => {
   const config: CommandConfig = {
+    prompt: String(opt['prompt']),
     model: opt['model'] ? String(opt['model']) : '',
     environment: opt['environment'] as EnvironmentName,
     directory: opt['directory'] ? String(opt['directory']) : '',
@@ -89,13 +98,24 @@ const parseOptions = (opt: OptionsInput): CommandConfig => {
 };
 
 export const handler = async (...handlerArgs: HandlerArgs): Promise<void> => {
-  const [task] = getArgs(handlerArgs);
-  const { model, environment, directory, tools, environmentId, system } =
-    parseOptions(getOpt(handlerArgs));
+  const {
+    prompt,
+    model,
+    environment,
+    directory,
+    tools,
+    environmentId,
+    system,
+  } = parseOptions(
+    await promptMissingOptions(
+      actualOptions,
+      await parseFileOptions(getOpt(handlerArgs), ['prompt', 'system']),
+    ),
+  );
 
   const modelSuffix = model ? ` (using model ${model})` : '';
   logger.debug(
-    `Running task "${task}" in ${environment} about code in ${directory}${modelSuffix}...`,
+    `Running task prompt in ${environment} about code in ${directory}${modelSuffix}...`,
   );
 
   const environmentConfig = createEnvironmentConfig(
@@ -114,7 +134,7 @@ export const handler = async (...handlerArgs: HandlerArgs): Promise<void> => {
     },
     instructions: system,
   });
-  const result = await agent.generate({ prompt: task });
+  const result = await agent.generate({ prompt });
   const { text } = result;
 
   output(text);

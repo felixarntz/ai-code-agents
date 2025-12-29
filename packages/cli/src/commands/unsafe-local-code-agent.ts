@@ -1,9 +1,6 @@
 import {
-  createCodeAgent,
   createEnvironment,
-  EnvironmentNames,
   EnvironmentToolSafetyLevels,
-  type EnvironmentName,
   type EnvironmentToolSafetyLevel,
 } from 'ai-code-agents';
 import {
@@ -15,14 +12,13 @@ import {
   injectFileOptionsForCommander,
   promptMissingOptions,
   stripOptionFieldsForCommander,
-  logger,
-  output,
   normalizeAbsolutePath,
 } from '@felixarntz/cli-utils';
-import { createEnvironmentConfig } from '../util/create-environment-config';
+import { createAndRunCodeAgent } from '../util/create-and-run-code-agent';
 
-export const name = 'code-agent';
-export const description = 'Runs a code agent to perform a specified task.';
+export const name = 'unsafe-local-code-agent';
+export const description =
+  'Runs a code agent locally to perform a specified task.';
 
 const actualOptions: Option[] = [
   {
@@ -33,12 +29,6 @@ const actualOptions: Option[] = [
   {
     argname: '-m, --model <model>',
     description: 'Model to use for the agent',
-    required: true,
-  },
-  {
-    argname: '-e, --environment <environment>',
-    description: 'Environment type to use',
-    choices: EnvironmentNames,
     required: true,
   },
   {
@@ -54,11 +44,6 @@ const actualOptions: Option[] = [
     defaults: 'readonly',
   },
   {
-    argname: '-i, --environment-id <environment-id>',
-    description:
-      'ID of the environment, if relevant (e.g. Docker container ID)',
-  },
-  {
     argname: '-s, --system <system>',
     description: 'System instruction to guide the agent',
   },
@@ -71,11 +56,9 @@ export const options = injectFileOptionsForCommander(actualOptions, [
 
 type CommandConfig = {
   prompt: string;
-  environment: EnvironmentName;
   model: string;
   directory: string;
   tools: EnvironmentToolSafetyLevel;
-  environmentId?: string;
   system?: string;
 };
 
@@ -83,15 +66,11 @@ const parseOptions = (opt: OptionsInput): CommandConfig => {
   const config: CommandConfig = {
     prompt: String(opt['prompt']),
     model: opt['model'] ? String(opt['model']) : '',
-    environment: opt['environment'] as EnvironmentName,
     directory: opt['directory'] ? String(opt['directory']) : '',
     tools: opt['tools']
       ? (opt['tools'] as EnvironmentToolSafetyLevel)
       : 'readonly',
   };
-  if (opt['environment-id']) {
-    config.environmentId = String(opt['environment-id']);
-  }
   if (opt['system']) {
     config.system = String(opt['system']);
   }
@@ -99,44 +78,21 @@ const parseOptions = (opt: OptionsInput): CommandConfig => {
 };
 
 export const handler = async (...handlerArgs: HandlerArgs): Promise<void> => {
-  const {
-    prompt,
-    model,
-    environment,
-    directory,
-    tools,
-    environmentId,
-    system,
-  } = parseOptions(
+  const { prompt, model, directory, tools, system } = parseOptions(
     await promptMissingOptions(
       actualOptions,
       await parseFileOptions(getOpt(handlerArgs), ['prompt', 'system']),
     ),
   );
 
-  const modelSuffix = model ? ` (using model ${model})` : '';
-  logger.debug(
-    `Running task prompt in ${environment} about code in ${directory}${modelSuffix}...`,
-  );
-
-  const environmentConfig = createEnvironmentConfig(
-    environment,
-    directory,
-    environmentId,
-  );
-
-  const agent = createCodeAgent({
-    model,
-    environment: createEnvironment(environment, environmentConfig),
+  await createAndRunCodeAgent({
+    environment: createEnvironment('unsafe-local', {
+      directoryPath: directory,
+    }),
     environmentToolsDefinition: tools,
-    maxSteps: 10,
-    logStep: (log: string) => {
-      logger.debug('\n' + log);
-    },
-    instructions: system,
+    model,
+    prompt,
+    system,
+    directory,
   });
-  const result = await agent.generate({ prompt });
-  const { text } = result;
-
-  output(text);
 };

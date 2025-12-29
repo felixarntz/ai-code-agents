@@ -16,6 +16,14 @@ describe('getAdditionalInstructions', () => {
     outputSchema: z.object({}),
     execute: vi.fn(),
     toModelOutput: vi.fn(),
+    inputExamples: [
+      {
+        input: { param: 'value' },
+      },
+      {
+        input: 'string input',
+      },
+    ],
     examples: [
       {
         input: { param: 'value' },
@@ -36,6 +44,7 @@ describe('getAdditionalInstructions', () => {
     outputSchema: z.object({}),
     execute: vi.fn(),
     toModelOutput: vi.fn(),
+    inputExamples: [],
     examples: [],
     needsApproval: false,
   };

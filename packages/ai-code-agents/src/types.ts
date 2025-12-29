@@ -131,6 +131,7 @@ export interface ToolInterface<ToolInputType, ToolOutputType> {
   ): Promise<ToolOutputType>;
   toModelOutput(output: ToolOutputType): ModelFormattedToolResult;
   get examples(): Array<ToolExample<ToolInputType, ToolOutputType>>;
+  get inputExamples(): Array<{ input: ToolInputType }>;
   get needsApproval(): boolean;
 }
 

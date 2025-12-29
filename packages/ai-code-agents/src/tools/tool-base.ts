@@ -102,6 +102,17 @@ export abstract class ToolBase<
   }
 
   /**
+   * Gets the input examples for the tool.
+   *
+   * This is used for AI SDK v6 compatibility, which supports input examples, but without output examples.
+   *
+   * @returns The tool input examples.
+   */
+  get inputExamples(): Array<{ input: ToolInputType }> {
+    return this.examples.map((example) => ({ input: example.input }));
+  }
+
+  /**
    * Gets the examples for the tool.
    *
    * @returns The tool examples.

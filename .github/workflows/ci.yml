@@ -113,6 +113,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      # needed so that cross-dependencies are built before unit testing
+      - name: Build project
+        run: pnpm build
+
       - name: Run unit tests
         run: pnpm test:ci
 

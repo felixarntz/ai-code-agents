@@ -1,4 +1,5 @@
 import type { StepResult, Tool } from 'ai';
+import { truncateObject, truncateString } from './truncate';
 
 /**
  * Returns a formatted log string for a given step result from an AI agent.
@@ -23,22 +24,30 @@ export function getStepLog(
     if (part.type === 'tool-call' && 'input' in part) {
       logEntry +=
         typeof part.input === 'string'
-          ? part.input
-          : JSON.stringify(part.input);
+          ? truncateString(part.input)
+          : part.input === null || part.input === undefined
+            ? String(part.input)
+            : JSON.stringify(
+                truncateObject(part.input as Record<string, unknown>),
+              );
     } else if (part.type === 'tool-result' && 'output' in part) {
       logEntry +=
         typeof part.output === 'string'
-          ? part.output
-          : JSON.stringify(part.output);
+          ? truncateString(part.output)
+          : part.output === null || part.output === undefined
+            ? String(part.output)
+            : JSON.stringify(
+                truncateObject(part.output as Record<string, unknown>),
+              );
     } else if (part.type === 'tool-error' && 'error' in part) {
       logEntry +=
         typeof part.error === 'object' &&
         part.error !== null &&
         'message' in part.error
-          ? part.error.message
+          ? (part.error.message as string)
           : String(part.error);
     } else if (part.type === 'text' && 'text' in part) {
-      logEntry += part.text;
+      logEntry += truncateString(part.text);
     }
     logEntry += '\n';
   });

@@ -3,6 +3,7 @@ import {
   type CommandLineEnvironmentInterface,
   type ToolConfig,
   type ToolExample,
+  type ModelToolResultToFormat,
   type ModelFormattedToolResult,
 } from '../types';
 import { escapeCommandArg } from '../util/escape-command-arg';
@@ -126,10 +127,17 @@ export class ListDirectoryTool extends EnvironmentToolBase<
   /**
    * Converts the tool output to a format suitable for model consumption.
    *
-   * @param output - The output from the tool execution.
+   * @param options - The tool result, including the output from the tool execution.
    * @returns The formatted tool result.
    */
-  toModelOutput(output: ListDirectoryToolOutput): ModelFormattedToolResult {
+  toModelOutput(
+    options: ModelToolResultToFormat<
+      ListDirectoryToolInput,
+      ListDirectoryToolOutput
+    >,
+  ): ModelFormattedToolResult {
+    const { output } = options;
+
     const formatEntries = (entries: string[], type: string) => {
       if (entries.length === 0) {
         return `No ${type} found.`;

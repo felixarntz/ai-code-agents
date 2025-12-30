@@ -107,6 +107,11 @@ export type Environment =
 type ModelTextResult = { type: 'text'; value: string };
 type ModelTextPart = { type: 'text'; text: string };
 type ModelMediaPart = { type: 'media'; data: string; mediaType: string };
+export type ModelToolResultToFormat<ToolInputType, ToolOutputType> = {
+  toolCallId: string;
+  input: ToolInputType;
+  output: ToolOutputType;
+};
 export type ModelFormattedToolResult =
   | ModelTextResult
   | {
@@ -129,7 +134,9 @@ export interface ToolInterface<ToolInputType, ToolOutputType> {
     input: ToolInputType,
     options: ToolExecutionOptions,
   ): Promise<ToolOutputType>;
-  toModelOutput(output: ToolOutputType): ModelFormattedToolResult;
+  toModelOutput(
+    options: ModelToolResultToFormat<ToolInputType, ToolOutputType>,
+  ): ModelFormattedToolResult;
   get examples(): Array<ToolExample<ToolInputType, ToolOutputType>>;
   get inputExamples(): Array<{ input: ToolInputType }>;
   get needsApproval(): boolean;

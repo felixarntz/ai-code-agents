@@ -4,6 +4,7 @@ import {
   type FilesystemEnvironmentInterface,
   type ToolConfig,
   type ToolExample,
+  type ModelToolResultToFormat,
   type ModelFormattedToolResult,
 } from '../types';
 import {
@@ -74,10 +75,13 @@ export class DeleteFileTool extends EnvironmentToolBase<
   /**
    * Converts the tool output to a format suitable for model consumption.
    *
-   * @param output - The output from the tool execution.
+   * @param options - The tool result, including the output from the tool execution.
    * @returns The formatted tool result.
    */
-  toModelOutput(output: DeleteFileToolOutput): ModelFormattedToolResult {
+  toModelOutput(
+    options: ModelToolResultToFormat<DeleteFileToolInput, DeleteFileToolOutput>,
+  ): ModelFormattedToolResult {
+    const { output } = options;
     return {
       type: 'text',
       value: `File \`${output.path}\` deleted successfully.`,

@@ -4,6 +4,7 @@ import {
   type FilesystemEnvironmentInterface,
   type ToolConfig,
   type ToolExample,
+  type ModelToolResultToFormat,
   type ModelFormattedToolResult,
 } from '../types';
 import {
@@ -78,10 +79,13 @@ export class CopyFileTool extends EnvironmentToolBase<
   /**
    * Converts the tool output to a format suitable for model consumption.
    *
-   * @param output - The output from the tool execution.
+   * @param options - The tool result, including the output from the tool execution.
    * @returns The formatted tool result.
    */
-  toModelOutput(output: CopyFileToolOutput): ModelFormattedToolResult {
+  toModelOutput(
+    options: ModelToolResultToFormat<CopyFileToolInput, CopyFileToolOutput>,
+  ): ModelFormattedToolResult {
+    const { output } = options;
     return {
       type: 'text',
       value: `File \`${output.sourcePath}\` copied successfully to \`${output.destinationPath}\`.`,

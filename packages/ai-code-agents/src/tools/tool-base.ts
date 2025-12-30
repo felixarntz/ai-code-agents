@@ -3,6 +3,7 @@ import type {
   ToolInterface,
   ToolConfig as ToolBaseConfig,
   ToolExample,
+  ModelToolResultToFormat,
   ModelFormattedToolResult,
 } from '../types';
 
@@ -134,10 +135,12 @@ export abstract class ToolBase<
   /**
    * Converts the tool output to a format suitable for model consumption.
    *
-   * @param output - The output from the tool execution.
+   * @param options - The tool result, including the output from the tool execution.
    * @returns The formatted tool result.
    */
-  abstract toModelOutput(output: ToolOutputType): ModelFormattedToolResult;
+  abstract toModelOutput(
+    options: ModelToolResultToFormat<ToolInputType, ToolOutputType>,
+  ): ModelFormattedToolResult;
 
   /**
    * Returns the metadata for the tool.

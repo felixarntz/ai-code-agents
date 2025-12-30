@@ -140,7 +140,11 @@ describe('GetProjectFileStructureTool', () => {
       excludeGitIgnored: true,
     };
 
-    const result = tool.toModelOutput(output);
+    const result = tool.toModelOutput({
+      toolCallId: 'test-call',
+      input: {},
+      output,
+    });
 
     expect(result).toEqual({
       type: 'text',
@@ -159,7 +163,11 @@ describe('GetProjectFileStructureTool', () => {
       excludeGitIgnored: true,
     };
 
-    const result = tool.toModelOutput(output);
+    const result = tool.toModelOutput({
+      toolCallId: 'test-call',
+      input: {},
+      output,
+    });
 
     expect(result).toEqual({
       type: 'text',

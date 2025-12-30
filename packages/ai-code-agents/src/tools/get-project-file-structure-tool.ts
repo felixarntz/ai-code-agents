@@ -3,6 +3,7 @@ import {
   type CommandLineEnvironmentInterface,
   type ToolConfig,
   type ToolExample,
+  type ModelToolResultToFormat,
   type ModelFormattedToolResult,
 } from '../types';
 import { escapeCommandArg } from '../util/escape-command-arg';
@@ -143,12 +144,17 @@ export class GetProjectFileStructureTool extends EnvironmentToolBase<
   /**
    * Converts the tool output to a format suitable for model consumption.
    *
-   * @param output - The output from the tool execution.
+   * @param options - The tool result, including the output from the tool execution.
    * @returns The formatted tool result.
    */
   toModelOutput(
-    output: GetProjectFileStructureToolOutput,
+    options: ModelToolResultToFormat<
+      GetProjectFileStructureToolInput,
+      GetProjectFileStructureToolOutput
+    >,
   ): ModelFormattedToolResult {
+    const { output } = options;
+
     const tree = buildTreeFromFiles(output.files);
 
     if (!tree) {

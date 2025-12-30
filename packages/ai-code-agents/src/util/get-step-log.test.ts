@@ -4,45 +4,46 @@ import { getStepLog } from './get-step-log';
 
 const createStepResult = (
   overrides: Partial<StepResult<Record<string, Tool>>> = {},
-): StepResult<NoInfer<Record<string, Tool>>> => ({
-  content: [],
-  text: '',
-  reasoning: [],
-  reasoningText: undefined,
-  files: [],
-  sources: [],
-  toolCalls: [],
-  toolResults: [],
-  staticToolCalls: [],
-  dynamicToolCalls: [],
-  staticToolResults: [],
-  dynamicToolResults: [],
-  finishReason: 'stop',
-  usage: {
-    inputTokens: 0,
-    outputTokens: 0,
-    totalTokens: 0,
-    inputTokenDetails: {
-      noCacheTokens: undefined,
-      cacheReadTokens: undefined,
-      cacheWriteTokens: undefined,
+): StepResult<NoInfer<Record<string, Tool>>> =>
+  ({
+    content: [],
+    text: '',
+    reasoning: [],
+    reasoningText: undefined,
+    files: [],
+    sources: [],
+    toolCalls: [],
+    toolResults: [],
+    staticToolCalls: [],
+    dynamicToolCalls: [],
+    staticToolResults: [],
+    dynamicToolResults: [],
+    finishReason: 'stop',
+    usage: {
+      inputTokens: 0,
+      outputTokens: 0,
+      totalTokens: 0,
+      inputTokenDetails: {
+        noCacheTokens: undefined,
+        cacheReadTokens: undefined,
+        cacheWriteTokens: undefined,
+      },
+      outputTokenDetails: {
+        textTokens: undefined,
+        reasoningTokens: undefined,
+      },
     },
-    outputTokenDetails: {
-      textTokens: undefined,
-      reasoningTokens: undefined,
+    warnings: undefined,
+    request: {},
+    response: {
+      id: 'test-response',
+      timestamp: new Date(),
+      modelId: 'test-model',
+      messages: [],
     },
-  },
-  warnings: undefined,
-  request: {},
-  response: {
-    id: 'test-response',
-    timestamp: new Date(),
-    modelId: 'test-model',
-    messages: [],
-  },
-  providerMetadata: undefined,
-  ...overrides,
-});
+    providerMetadata: undefined,
+    ...overrides,
+  }) as StepResult<NoInfer<Record<string, Tool>>>;
 
 describe('getStepLog', () => {
   it('should return empty string for empty content array', () => {

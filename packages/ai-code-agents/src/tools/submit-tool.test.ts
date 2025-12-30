@@ -23,7 +23,11 @@ describe('SubmitTool', () => {
 
   it('should return the correct model output', () => {
     const tool = new SubmitTool();
-    const modelOutput = tool.toModelOutput({});
+    const modelOutput = tool.toModelOutput({
+      toolCallId: 'test-call',
+      input: {},
+      output: {},
+    });
     expect(modelOutput).toEqual({
       type: 'text',
       value: 'Task submitted successfully.',

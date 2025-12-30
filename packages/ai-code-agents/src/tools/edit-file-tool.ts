@@ -3,6 +3,7 @@ import {
   type FilesystemEnvironmentInterface,
   type ToolConfig,
   type ToolExample,
+  type ModelToolResultToFormat,
   type ModelFormattedToolResult,
 } from '../types';
 import {
@@ -145,10 +146,13 @@ export class EditFileTool extends EnvironmentToolBase<
   /**
    * Converts the tool output to a format suitable for model consumption.
    *
-   * @param output - The output from the tool execution.
+   * @param options - The tool result, including the output from the tool execution.
    * @returns The formatted tool result.
    */
-  toModelOutput(output: EditFileToolOutput): ModelFormattedToolResult {
+  toModelOutput(
+    options: ModelToolResultToFormat<EditFileToolInput, EditFileToolOutput>,
+  ): ModelFormattedToolResult {
+    const { output } = options;
     return {
       type: 'text',
       value: `Edited file \`${output.path}\` with ${output.replacements} replacement(s).`,

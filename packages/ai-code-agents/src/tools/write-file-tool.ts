@@ -4,6 +4,7 @@ import {
   type FilesystemEnvironmentInterface,
   type ToolConfig,
   type ToolExample,
+  type ModelToolResultToFormat,
   type ModelFormattedToolResult,
 } from '../types';
 import {
@@ -78,10 +79,13 @@ export class WriteFileTool extends EnvironmentToolBase<
   /**
    * Converts the tool output to a format suitable for model consumption.
    *
-   * @param output - The output from the tool execution.
+   * @param options - The tool result, including the output from the tool execution.
    * @returns The formatted tool result.
    */
-  toModelOutput(output: WriteFileToolOutput): ModelFormattedToolResult {
+  toModelOutput(
+    options: ModelToolResultToFormat<WriteFileToolInput, WriteFileToolOutput>,
+  ): ModelFormattedToolResult {
+    const { output } = options;
     return {
       type: 'text',
       value: `File \`${output.path}\` written successfully.`,

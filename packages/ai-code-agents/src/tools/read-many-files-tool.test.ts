@@ -136,7 +136,13 @@ describe('ReadManyFilesTool', () => {
       'README.md': file2Result,
     };
 
-    const modelOutput = tool.toModelOutput(output);
+    const modelOutput = tool.toModelOutput({
+      toolCallId: 'test-call',
+      input: {
+        paths: ['src/file1.ts', 'README.md'],
+      },
+      output,
+    });
     expect(modelOutput.type).toBe('text');
     expect(modelOutput.value).toContain(
       'File: `src/file1.ts`\nContent:\n```typescript\nconsole.log("hello");\n```',
@@ -155,7 +161,13 @@ describe('ReadManyFilesTool', () => {
       'src/single.js': fileResult,
     };
 
-    const modelOutput = tool.toModelOutput(output);
+    const modelOutput = tool.toModelOutput({
+      toolCallId: 'test-call',
+      input: {
+        paths: ['src/single.js'],
+      },
+      output,
+    });
     expect(modelOutput.type).toBe('text');
     expect(modelOutput.value).toBe(
       'File: `src/single.js`\nContent:\n```javascript\nfunction test() {}\n```\n',
@@ -164,7 +176,13 @@ describe('ReadManyFilesTool', () => {
 
   it('should return empty string for model output when no files are read', () => {
     const output = {};
-    const modelOutput = tool.toModelOutput(output);
+    const modelOutput = tool.toModelOutput({
+      toolCallId: 'test-call',
+      input: {
+        paths: [],
+      },
+      output,
+    });
     expect(modelOutput.type).toBe('text');
     expect(modelOutput.value).toBe('');
   });

@@ -4,6 +4,7 @@ import {
   type FilesystemEnvironmentInterface,
   type ToolConfig,
   type ToolExample,
+  type ModelToolResultToFormat,
   type ModelFormattedToolResult,
 } from '../types';
 import { getLanguageIdentifierFromFilePath } from '../util/get-language-identifier-from-file-path';
@@ -92,10 +93,17 @@ export class ReadManyFilesTool extends EnvironmentToolBase<
   /**
    * Converts the tool output to a format suitable for model consumption.
    *
-   * @param output - The output from the tool execution.
+   * @param options - The tool result, including the output from the tool execution.
    * @returns The formatted tool result.
    */
-  toModelOutput(output: ReadManyFilesToolOutput): ModelFormattedToolResult {
+  toModelOutput(
+    options: ModelToolResultToFormat<
+      ReadManyFilesToolInput,
+      ReadManyFilesToolOutput
+    >,
+  ): ModelFormattedToolResult {
+    const { output } = options;
+
     const fileContentResponses = Object.values(output).map((fileResult) =>
       formatModelResponse(fileResult),
     );

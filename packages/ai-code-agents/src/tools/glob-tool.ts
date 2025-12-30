@@ -3,6 +3,7 @@ import {
   type CommandLineEnvironmentInterface,
   type ToolConfig,
   type ToolExample,
+  type ModelToolResultToFormat,
   type ModelFormattedToolResult,
 } from '../types';
 import { escapeCommandArg } from '../util/escape-command-arg';
@@ -181,10 +182,14 @@ export class GlobTool extends EnvironmentToolBase<
   /**
    * Converts the tool output to a format suitable for model consumption.
    *
-   * @param output - The output from the tool execution.
+   * @param options - The tool result, including the output from the tool execution.
    * @returns The formatted tool result.
    */
-  toModelOutput(output: GlobToolOutput): ModelFormattedToolResult {
+  toModelOutput(
+    options: ModelToolResultToFormat<GlobToolInput, GlobToolOutput>,
+  ): ModelFormattedToolResult {
+    const { output } = options;
+
     if (output.matchingPaths.length === 0) {
       return {
         type: 'text',

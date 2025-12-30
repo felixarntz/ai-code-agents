@@ -4,6 +4,7 @@ import {
   type FilesystemEnvironmentInterface,
   type ToolConfig,
   type ToolExample,
+  type ModelToolResultToFormat,
   type ModelFormattedToolResult,
 } from '../types';
 import { getLanguageIdentifierFromFilePath } from '../util/get-language-identifier-from-file-path';
@@ -85,10 +86,13 @@ export class ReadFileTool extends EnvironmentToolBase<
   /**
    * Converts the tool output to a format suitable for model consumption.
    *
-   * @param output - The output from the tool execution.
+   * @param options - The tool result, including the output from the tool execution.
    * @returns The formatted tool result.
    */
-  toModelOutput(output: ReadFileToolOutput): ModelFormattedToolResult {
+  toModelOutput(
+    options: ModelToolResultToFormat<ReadFileToolInput, ReadFileToolOutput>,
+  ): ModelFormattedToolResult {
+    const { output } = options;
     return {
       type: 'text',
       value: formatModelResponse(output),

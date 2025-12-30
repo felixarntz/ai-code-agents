@@ -1,6 +1,6 @@
 /* Note: This file exists purely to ensure compatibility with the AI SDK tool shape. None of these functions should be globally exported. */
 
-import { tool, type Tool } from '@ai-sdk/provider-utils';
+import type { Tool } from '@ai-sdk/provider-utils';
 import { createEnvironmentTool } from './tool-creators';
 import type {
   FilesystemEnvironmentInterface,
@@ -98,7 +98,7 @@ export function createReadFileTool(
   environment: FilesystemEnvironmentInterface,
   config?: ReadFileToolConfig,
 ): Tool<ReadFileToolInput, ReadFileToolOutput> {
-  return tool(createEnvironmentTool(ReadFileToolName, environment, config));
+  return createEnvironmentTool(ReadFileToolName, environment, config);
 }
 
 /**
@@ -112,7 +112,7 @@ export function createWriteFileTool(
   environment: FilesystemEnvironmentInterface,
   config?: WriteFileToolConfig,
 ): Tool<WriteFileToolInput, WriteFileToolOutput> {
-  return tool(createEnvironmentTool(WriteFileToolName, environment, config));
+  return createEnvironmentTool(WriteFileToolName, environment, config);
 }
 
 /**
@@ -126,7 +126,7 @@ export function createDeleteFileTool(
   environment: FilesystemEnvironmentInterface,
   config?: DeleteFileToolConfig,
 ): Tool<DeleteFileToolInput, DeleteFileToolOutput> {
-  return tool(createEnvironmentTool(DeleteFileToolName, environment, config));
+  return createEnvironmentTool(DeleteFileToolName, environment, config);
 }
 
 /**
@@ -140,7 +140,7 @@ export function createEditFileTool(
   environment: FilesystemEnvironmentInterface,
   config?: EditFileToolConfig,
 ): Tool<EditFileToolInput, EditFileToolOutput> {
-  return tool(createEnvironmentTool(EditFileToolName, environment, config));
+  return createEnvironmentTool(EditFileToolName, environment, config);
 }
 
 /**
@@ -154,7 +154,7 @@ export function createMoveFileTool(
   environment: FilesystemEnvironmentInterface,
   config?: MoveFileToolConfig,
 ): Tool<MoveFileToolInput, MoveFileToolOutput> {
-  return tool(createEnvironmentTool(MoveFileToolName, environment, config));
+  return createEnvironmentTool(MoveFileToolName, environment, config);
 }
 
 /**
@@ -168,7 +168,7 @@ export function createCopyFileTool(
   environment: FilesystemEnvironmentInterface,
   config?: CopyFileToolConfig,
 ): Tool<CopyFileToolInput, CopyFileToolOutput> {
-  return tool(createEnvironmentTool(CopyFileToolName, environment, config));
+  return createEnvironmentTool(CopyFileToolName, environment, config);
 }
 
 /**
@@ -182,9 +182,7 @@ export function createReadManyFilesTool(
   environment: FilesystemEnvironmentInterface,
   config?: ReadManyFilesToolConfig,
 ): Tool<ReadManyFilesToolInput, ReadManyFilesToolOutput> {
-  return tool(
-    createEnvironmentTool(ReadManyFilesToolName, environment, config),
-  );
+  return createEnvironmentTool(ReadManyFilesToolName, environment, config);
 }
 
 /**
@@ -198,8 +196,10 @@ export function createGetProjectFileStructureTool(
   environment: CommandLineEnvironmentInterface,
   config?: GetProjectFileStructureToolConfig,
 ): Tool<GetProjectFileStructureToolInput, GetProjectFileStructureToolOutput> {
-  return tool(
-    createEnvironmentTool(GetProjectFileStructureToolName, environment, config),
+  return createEnvironmentTool(
+    GetProjectFileStructureToolName,
+    environment,
+    config,
   );
 }
 
@@ -214,7 +214,7 @@ export function createGlobTool(
   environment: CommandLineEnvironmentInterface,
   config?: GlobToolConfig,
 ): Tool<GlobToolInput, GlobToolOutput> {
-  return tool(createEnvironmentTool(GlobToolName, environment, config));
+  return createEnvironmentTool(GlobToolName, environment, config);
 }
 
 /**
@@ -228,7 +228,7 @@ export function createGrepTool(
   environment: CommandLineEnvironmentInterface,
   config?: GrepToolConfig,
 ): Tool<GrepToolInput, GrepToolOutput> {
-  return tool(createEnvironmentTool(GrepToolName, environment, config));
+  return createEnvironmentTool(GrepToolName, environment, config);
 }
 
 /**
@@ -242,9 +242,7 @@ export function createListDirectoryTool(
   environment: CommandLineEnvironmentInterface,
   config?: ListDirectoryToolConfig,
 ): Tool<ListDirectoryToolInput, ListDirectoryToolOutput> {
-  return tool(
-    createEnvironmentTool(ListDirectoryToolName, environment, config),
-  );
+  return createEnvironmentTool(ListDirectoryToolName, environment, config);
 }
 
 /**
@@ -258,7 +256,7 @@ export function createRunCommandTool(
   environment: CommandLineEnvironmentInterface,
   config?: RunCommandToolConfig,
 ): Tool<RunCommandToolInput, RunCommandToolOutput> {
-  return tool(createEnvironmentTool(RunCommandToolName, environment, config));
+  return createEnvironmentTool(RunCommandToolName, environment, config);
 }
 
 /**
@@ -270,5 +268,5 @@ export function createRunCommandTool(
 export function createSubmitTool(
   config?: SubmitToolConfig,
 ): Tool<SubmitToolInput, SubmitToolOutput> {
-  return tool(new SubmitTool(config));
+  return new SubmitTool(config);
 }

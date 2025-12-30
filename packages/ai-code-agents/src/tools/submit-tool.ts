@@ -3,6 +3,7 @@ import { z } from 'zod';
 import type {
   ToolConfig,
   ToolExample,
+  ModelToolResultToFormat,
   ModelFormattedToolResult,
 } from '../types';
 import { ToolBase, type ToolMetadata } from './tool-base';
@@ -61,10 +62,12 @@ export class SubmitTool extends ToolBase<
   /**
    * Converts the tool output to a format suitable for model consumption.
    *
-   * @param _ - The output from the tool execution. Unused.
+   * @param _ - The tool result, including the output from the tool execution. Unused.
    * @returns The formatted tool result.
    */
-  toModelOutput(_: SubmitToolOutput): ModelFormattedToolResult {
+  toModelOutput(
+    _: ModelToolResultToFormat<SubmitToolInput, SubmitToolOutput>,
+  ): ModelFormattedToolResult {
     return {
       type: 'text',
       value: `Task submitted successfully.`,

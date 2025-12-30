@@ -158,10 +158,17 @@ describe('GlobTool', () => {
   it('should return no matching files found for model output when no files match', () => {
     const tool = new GlobTool(mockCmdEnv);
     const modelOutput = tool.toModelOutput({
-      searchPattern: '*.ts',
-      searchPath: 'src',
-      excludeGitIgnored: true,
-      matchingPaths: [],
+      toolCallId: 'test-call',
+      input: {
+        searchPattern: '*.ts',
+        searchPath: 'src',
+      },
+      output: {
+        searchPattern: '*.ts',
+        searchPath: 'src',
+        excludeGitIgnored: true,
+        matchingPaths: [],
+      },
     });
     expect(modelOutput.value).toBe('No matching files found.');
   });
@@ -169,10 +176,17 @@ describe('GlobTool', () => {
   it('should return a formatted list of matching files for model output', () => {
     const tool = new GlobTool(mockCmdEnv);
     const modelOutput = tool.toModelOutput({
-      searchPattern: '*.ts',
-      searchPath: 'src',
-      excludeGitIgnored: true,
-      matchingPaths: ['src/index.ts', 'src/util.ts'],
+      toolCallId: 'test-call',
+      input: {
+        searchPattern: '*.ts',
+        searchPath: 'src',
+      },
+      output: {
+        searchPattern: '*.ts',
+        searchPath: 'src',
+        excludeGitIgnored: true,
+        matchingPaths: ['src/index.ts', 'src/util.ts'],
+      },
     });
     expect(modelOutput.value).toContain('- `src/index.ts`');
     expect(modelOutput.value).toContain('- `src/util.ts`');

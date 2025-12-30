@@ -36,11 +36,11 @@
     "execution"
   ],
   "peerDependencies": {
-    "ai": "^6.0.0-beta",
+    "ai": "^6.0.0",
     "zod": "^4.0.0"
   },
   "dependencies": {
-    "@ai-sdk/provider-utils": "^4.0.0-beta"
+    "@ai-sdk/provider-utils": "^4.0.0"
   },
   "devDependencies": {
     "tsup": "^8.5.0",

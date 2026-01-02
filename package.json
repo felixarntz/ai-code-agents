@@ -22,7 +22,7 @@
     "zod": "^4.0.0"
   },
   "dependencies": {
-    "@ai-sdk/provider-utils": "^4.0.1",
+    "@ai-sdk/provider-utils": "^4.0.2",
     "@commander-js/extra-typings": "^13.1.0",
     "@felixarntz/cli-utils": "^0.1.1",
     "commander": "^13.1.0",
@@ -45,7 +45,8 @@
     "prettier": "^3.7.4",
     "tsup": "^8.5.1",
     "typescript-eslint": "^8.51.0",
-    "vitest": "^3.2.4"
+    "vitest": "^3.2.4",
+    "zod": "4.3.4"
   },
   "scripts": {
     "ai-code-agents": "DEBUG=true node ./packages/cli/dist/cli.js",

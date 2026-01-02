@@ -17,7 +17,7 @@ You will need:
 
 - Node.js 20+
 - `npm` or another package manager
-- AI SDK v5+ and zod v4+ (see below)
+- AI SDK v6+ and zod v4+ (see below)
 
 ```bash
 npm install ai-code-agents ai zod
@@ -37,7 +37,7 @@ const environment = createEnvironment('docker', {
 
 // Create an agent with all tools
 const agent = createCodeAgent({
-  model: openai('gpt-4'),
+  model: openai('gpt-5'),
   environment,
   environmentToolsDefinition: 'all',
   maxSteps: 10,
@@ -58,7 +58,7 @@ console.log(result.text);
 
 Environments provide sandboxed execution contexts for agents. All tools are built against environment interfaces, ensuring complete interoperability.
 
-**Currently Available:**
+**Built-in:**
 
 - `docker` - Docker container environments
 - `node-filesystem` - Node.js filesystem operations (read-only recommended)
@@ -74,7 +74,7 @@ Environments provide sandboxed execution contexts for agents. All tools are buil
 
 Tools enable agents to interact with their environments. Each tool has a well-defined purpose with comprehensive input/output validation.
 
-**Currently Available:**
+**Built-in:**
 
 - `read_file` - Read file contents
 - `write_file` - Write or create files
@@ -102,14 +102,7 @@ Tools enable agents to interact with their environments. Each tool has a well-de
 
 ### Agent Integrations
 
-**Currently Available:**
-
-- [Vercel AI SDK](https://ai-sdk.dev/) - Integration with AI SDK agents
-
-**Planned:**
-
-- [Mastra](https://mastra.ai/) - Integration with Mastra agents
-- [AI SDK Tools](https://ai-sdk-tools.dev/) - Integration with AI SDK Tools agents
+The agent infrastructure from the AI SDK is used by default. The `createCodeAgent` function will return an instance of `ToolLoopAgent`.
 
 ## Usage Examples
 
@@ -158,7 +151,7 @@ const environments = {
 
 // Configure tools per environment
 const agent = createCodeAgent({
-  model: openai('gpt-4'),
+  model: openai('gpt-5'),
   environments,
   environmentToolsDefinition: {
     frontend: 'all',
@@ -206,7 +199,7 @@ Enable agents to signal completion before reaching max steps:
 
 ```typescript
 const agent = createCodeAgent({
-  model: openai('gpt-4'),
+  model: openai('gpt-5'),
   environment,
   environmentToolsDefinition: 'all',
   maxSteps: 20,

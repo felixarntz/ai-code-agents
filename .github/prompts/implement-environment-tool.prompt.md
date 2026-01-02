@@ -1,10 +1,7 @@
-# Implement New Environment Tool
-
-<task name="Implement New Environment Tool">
-
-<task_objective>
-Guide the implementation of a new environment tool for the AI Code Agents package. The workflow ensures proper design of data structures (input/output schemas) before implementation, following the established architectural patterns. The output will be a fully implemented and tested environment tool that integrates with the existing tool ecosystem.
-</task_objective>
+---
+agent: Plan
+---
+Your task is to guide the implementation of a new environment tool for the AI Code Agents package. The workflow ensures proper design of data structures (input/output schemas) before implementation, following the established architectural patterns. The output will be a fully implemented and tested environment tool that integrates with the existing tool ecosystem.
 
 <detailed_sequence_steps>
 
@@ -350,5 +347,3 @@ pnpm test
 - **NEVER**, under NO circumstances, modify environment interfaces or implementations. ONLY create the new tool.
 
 </important_reminders>
-
-</task>

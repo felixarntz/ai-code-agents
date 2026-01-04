@@ -1,5 +1,8 @@
 import { exec } from 'node:child_process';
-import {UnixEnvironmentBase, escapeCommandArg } from '@ai-code-agents/environment-utils';
+import {
+  UnixEnvironmentBase,
+  escapeCommandArg,
+} from '@ai-code-agents/environment-utils';
 import { escapeCommand } from '../util/escape-command';
 
 export type DockerEnvironmentConfig = {

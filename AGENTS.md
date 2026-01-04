@@ -106,7 +106,7 @@ All code execution and filesystem operations must respect environment boundaries
 
 ## Project Architecture Overview
 
-The project is organized as a pnpm monorepo with two main packages:
+The project is organized as a pnpm monorepo with three main packages:
 
 ### Core Package (`packages/ai-code-agents`)
 
@@ -134,6 +134,14 @@ The main SDK library that provides:
 
 Command-line interface for running code agents with various commands and configurations.
 
+### Environment Utils Package (`packages/environment-utils`)
+
+Utilities for implementing AI Code agents execution environments.
+
+### Just Bash Package (`packages/just-bash`)
+
+Execution environment for coding agents using the "just-bash" simulated bash environment.
+
 ## Directory Structure
 
 This is an overview of the most important files and directories in the project. It is not comprehensive - there may be additional files and directories not listed here.
@@ -155,10 +163,24 @@ This is an overview of the most important files and directories in the project. 
 │   │   ├── tsconfig.json        # TypeScript configuration
 │   │   ├── tsup.config.ts       # Build configuration
 │   │   └── vitest.config.ts     # Test configuration
-│   └── cli/                     # CLI application
+│   ├── cli/                     # CLI application
+│   │   ├── src/
+│   │   │   ├── commands/        # CLI command implementations
+│   │   │   └── cli.ts
+│   │   ├── package.json         # Package configuration
+│   │   ├── tsconfig.json        # TypeScript configuration
+│   │   ├── tsup.config.ts       # Build configuration
+│   │   └── vitest.config.ts     # Test configuration
+│   ├── environment-utils/       # Environment utilities
+│   │   ├── src/
+│   │   │   └── index.ts
+│   │   ├── package.json         # Package configuration
+│   │   ├── tsconfig.json        # TypeScript configuration
+│   │   ├── tsup.config.ts       # Build configuration
+│   │   └── vitest.config.ts     # Test configuration
+│   └── just-bash/               # Just Bash environment
 │       ├── src/
-│       │   ├── commands/        # CLI command implementations
-│       │   └── cli.ts
+│       │   └── index.ts
 │       ├── package.json         # Package configuration
 │       ├── tsconfig.json        # TypeScript configuration
 │       ├── tsup.config.ts       # Build configuration

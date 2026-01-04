@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'vitest';
+import { Bash } from 'just-bash';
 import {
   JustBashEnvironment,
   JustBashEnvironmentName,
@@ -10,7 +11,7 @@ import {
  * @returns A new JustBashEnvironment instance with default configuration.
  */
 function createDefaultTestEnvironment(): JustBashEnvironment {
-  return new JustBashEnvironment();
+  return JustBashEnvironment.create();
 }
 
 describe('JustBashEnvironment', () => {
@@ -22,45 +23,59 @@ describe('JustBashEnvironment', () => {
     });
   });
 
-  describe('constructor', () => {
+  describe('create factory method', () => {
     it('should create an environment with default configuration', () => {
-      const env = new JustBashEnvironment();
+      const env = JustBashEnvironment.create();
       expect(env.name).toBe('just-bash');
     });
 
-    it('should create an environment with empty config object', () => {
-      const env = new JustBashEnvironment({});
+    it('should create an environment with empty options object', () => {
+      const env = JustBashEnvironment.create({});
       expect(env.name).toBe('just-bash');
     });
 
-    it('should create an environment with initial files', () => {
-      const initialFiles = {
+    it('should create an environment with initial files via bashOptions', () => {
+      const files = {
         '/test.txt': 'Hello, World!',
         '/data/config.json': '{"key": "value"}',
       };
-      const env = new JustBashEnvironment({ initialFiles });
+      const env = JustBashEnvironment.create({ bashOptions: { files } });
       expect(env.name).toBe('just-bash');
     });
 
     it('should create an environment with custom directory path', () => {
-      const env = new JustBashEnvironment({ directoryPath: '/app' });
+      const env = JustBashEnvironment.create({ directoryPath: '/app' });
       expect(env.name).toBe('just-bash');
     });
 
     it('should create an environment with custom environment variables', () => {
-      const env = new JustBashEnvironment({
+      const env = JustBashEnvironment.create({
         env: { MY_VAR: 'my_value', ANOTHER_VAR: '123' },
       });
       expect(env.name).toBe('just-bash');
     });
 
     it('should create an environment with all config options', () => {
-      const initialFiles = { '/test.txt': 'content' };
-      const env = new JustBashEnvironment({
-        initialFiles,
+      const files = { '/test.txt': 'content' };
+      const env = JustBashEnvironment.create({
+        bashOptions: { files },
         directoryPath: '/app',
         env: { MY_VAR: 'value' },
       });
+      expect(env.name).toBe('just-bash');
+    });
+  });
+
+  describe('constructor with existing Bash instance', () => {
+    it('should create an environment with an existing Bash instance', () => {
+      const bash = new Bash({ files: { '/test.txt': 'content' } });
+      const env = new JustBashEnvironment({ bash });
+      expect(env.name).toBe('just-bash');
+    });
+
+    it('should create an environment with Bash instance and directoryPath', () => {
+      const bash = new Bash({ cwd: '/app' });
+      const env = new JustBashEnvironment({ bash, directoryPath: '/app' });
       expect(env.name).toBe('just-bash');
     });
   });
@@ -121,7 +136,7 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should handle variable expansion', async () => {
-      const env = new JustBashEnvironment({ env: { MY_VAR: 'test_value' } });
+      const env = JustBashEnvironment.create({ env: { MY_VAR: 'test_value' } });
       const { exitCode, stdout } = await env.runCommand('echo $MY_VAR');
 
       expect(exitCode).toBe(0);
@@ -139,9 +154,9 @@ describe('JustBashEnvironment', () => {
 
   describe('file operations via inherited methods', () => {
     it('should read a file that was initialized', async () => {
-      const initialFiles = { '/home/user/test.txt': 'file content' };
-      const env = new JustBashEnvironment({
-        initialFiles,
+      const files = { '/home/user/test.txt': 'file content' };
+      const env = JustBashEnvironment.create({
+        bashOptions: { files },
         directoryPath: '/home/user',
       });
 
@@ -150,7 +165,7 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should write and read a file', async () => {
-      const env = new JustBashEnvironment({ directoryPath: '/home/user' });
+      const env = JustBashEnvironment.create({ directoryPath: '/home/user' });
 
       await env.writeFile('newfile.txt', 'new content');
       const result = await env.readFile('newfile.txt');
@@ -159,9 +174,9 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should throw error when reading non-existent file', async () => {
-      const initialFiles = { '/home/user/exists.txt': 'content' };
-      const env = new JustBashEnvironment({
-        initialFiles,
+      const files = { '/home/user/exists.txt': 'content' };
+      const env = JustBashEnvironment.create({
+        bashOptions: { files },
         directoryPath: '/home/user',
       });
 
@@ -174,9 +189,9 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should delete a file', async () => {
-      const initialFiles = { '/home/user/todelete.txt': 'content' };
-      const env = new JustBashEnvironment({
-        initialFiles,
+      const files = { '/home/user/todelete.txt': 'content' };
+      const env = JustBashEnvironment.create({
+        bashOptions: { files },
         directoryPath: '/home/user',
       });
 
@@ -191,11 +206,11 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should move a file', async () => {
-      const initialFiles = {
+      const files = {
         '/home/user/source.txt': 'source content',
       };
-      const env = new JustBashEnvironment({
-        initialFiles,
+      const env = JustBashEnvironment.create({
+        bashOptions: { files },
         directoryPath: '/home/user',
       });
 
@@ -209,11 +224,11 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should copy a file', async () => {
-      const initialFiles = {
+      const files = {
         '/home/user/original.txt': 'original content',
       };
-      const env = new JustBashEnvironment({
-        initialFiles,
+      const env = JustBashEnvironment.create({
+        bashOptions: { files },
         directoryPath: '/home/user',
       });
 
@@ -228,9 +243,9 @@ describe('JustBashEnvironment', () => {
 
   describe('directory operations', () => {
     it('should work with custom cwd', async () => {
-      const initialFiles = { '/app/data.txt': 'app data' };
-      const env = new JustBashEnvironment({
-        initialFiles,
+      const files = { '/app/data.txt': 'app data' };
+      const env = JustBashEnvironment.create({
+        bashOptions: { files },
         directoryPath: '/app',
       });
 
@@ -372,13 +387,13 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should support glob patterns', async () => {
-      const initialFiles = {
+      const files = {
         '/home/user/file1.txt': 'content1',
         '/home/user/file2.txt': 'content2',
         '/home/user/other.md': 'markdown',
       };
-      const env = new JustBashEnvironment({
-        initialFiles,
+      const env = JustBashEnvironment.create({
+        bashOptions: { files },
         directoryPath: '/home/user',
       });
 
@@ -393,9 +408,9 @@ describe('JustBashEnvironment', () => {
 
   describe('built-in commands', () => {
     it('should support cat command', async () => {
-      const initialFiles = { '/home/user/test.txt': 'test content' };
-      const env = new JustBashEnvironment({
-        initialFiles,
+      const files = { '/home/user/test.txt': 'test content' };
+      const env = JustBashEnvironment.create({
+        bashOptions: { files },
         directoryPath: '/home/user',
       });
 
@@ -406,11 +421,11 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should support grep command', async () => {
-      const initialFiles = {
+      const files = {
         '/home/user/data.txt': 'line1\nline2 match\nline3',
       };
-      const env = new JustBashEnvironment({
-        initialFiles,
+      const env = JustBashEnvironment.create({
+        bashOptions: { files },
         directoryPath: '/home/user',
       });
 
@@ -497,12 +512,12 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should support find command', async () => {
-      const initialFiles = {
+      const files = {
         '/home/user/dir/file1.txt': 'content1',
         '/home/user/dir/file2.txt': 'content2',
       };
-      const env = new JustBashEnvironment({
-        initialFiles,
+      const env = JustBashEnvironment.create({
+        bashOptions: { files },
         directoryPath: '/home/user',
       });
 
@@ -516,11 +531,11 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should support jq command for JSON processing', async () => {
-      const initialFiles = {
+      const files = {
         '/home/user/data.json': '{"name": "test", "value": 42}',
       };
-      const env = new JustBashEnvironment({
-        initialFiles,
+      const env = JustBashEnvironment.create({
+        bashOptions: { files },
         directoryPath: '/home/user',
       });
 
@@ -545,7 +560,7 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should persist filesystem changes between exec calls', async () => {
-      const env = new JustBashEnvironment({ directoryPath: '/home/user' });
+      const env = JustBashEnvironment.create({ directoryPath: '/home/user' });
 
       await env.runCommand('echo "test" > persistent.txt');
       const { stdout } = await env.runCommand('cat persistent.txt');
@@ -554,7 +569,7 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should not persist cwd changes between exec calls', async () => {
-      const env = new JustBashEnvironment({ directoryPath: '/home/user' });
+      const env = JustBashEnvironment.create({ directoryPath: '/home/user' });
 
       await env.runCommand('cd /tmp');
       const { stdout } = await env.runCommand('pwd');

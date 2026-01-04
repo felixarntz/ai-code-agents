@@ -109,6 +109,9 @@ importers:
 
   packages/cli:
     dependencies:
+      '@ai-code-agents/just-bash':
+        specifier: workspace:*
+        version: link:../just-bash
       '@commander-js/extra-typings':
         specifier: ^13.0.0
         version: 13.1.0(commander@13.1.0)

@@ -10,6 +10,12 @@ import {
   options as dockerCodeAgentOptions,
 } from './commands/docker-code-agent';
 import {
+  name as justBashCodeAgentName,
+  description as justBashCodeAgentDescription,
+  handler as justBashCodeAgentHandler,
+  options as justBashCodeAgentOptions,
+} from './commands/just-bash-code-agent';
+import {
   name as mockFilesystemCodeAgentName,
   description as mockFilesystemCodeAgentDescription,
   handler as mockFilesystemCodeAgentHandler,
@@ -37,6 +43,10 @@ function initialize() {
   withOptions(program.command(dockerCodeAgentName), dockerCodeAgentOptions)
     .description(dockerCodeAgentDescription)
     .action(withErrorHandling(dockerCodeAgentHandler));
+
+  withOptions(program.command(justBashCodeAgentName), justBashCodeAgentOptions)
+    .description(justBashCodeAgentDescription)
+    .action(withErrorHandling(justBashCodeAgentHandler));
 
   withOptions(
     program.command(mockFilesystemCodeAgentName),

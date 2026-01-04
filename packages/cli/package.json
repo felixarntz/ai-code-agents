@@ -7,8 +7,7 @@
   "bin": {
     "ai-code-agents": "dist/cli.js"
   },
-  "main": "dist/cli.cjs",
-  "module": "dist/cli.js",
+  "main": "dist/cli.js",
   "types": "dist/cli.d.ts",
   "files": [
     "dist/**/*"
@@ -35,6 +34,7 @@
     "cli"
   ],
   "dependencies": {
+    "@ai-code-agents/just-bash": "workspace:*",
     "@commander-js/extra-typings": "^13.0.0",
     "@felixarntz/cli-utils": "^0.1.1",
     "ai-code-agents": "workspace:*",

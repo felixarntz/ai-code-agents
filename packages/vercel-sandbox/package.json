@@ -1,0 +1,63 @@
+{
+  "name": "@ai-code-agents/vercel-sandbox",
+  "version": "0.1.0",
+  "description": "Execution environment for coding agents using Vercel Sandbox.",
+  "license": "MIT",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*"
+  ],
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "homepage": "https://github.com/felixarntz/ai-code-agents/tree/main/packages/vercel-sandbox#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/felixarntz/ai-code-agents.git",
+    "directory": "packages/vercel-sandbox"
+  },
+  "bugs": {
+    "url": "https://github.com/felixarntz/ai-code-agents/issues"
+  },
+  "keywords": [
+    "ai",
+    "sdk",
+    "coding",
+    "code",
+    "agent",
+    "agentic",
+    "tools",
+    "tool-calling",
+    "environment",
+    "sandbox",
+    "execution",
+    "vercel",
+    "vercel-sandbox"
+  ],
+  "dependencies": {
+    "@ai-code-agents/environment-utils": "workspace:*",
+    "@vercel/sandbox": "^1.0.10"
+  },
+  "devDependencies": {
+    "tsup": "^8.5.0",
+    "typescript": "^5.3.3",
+    "vitest": "^3.1.1"
+  },
+  "scripts": {
+    "build": "tsup",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "lint:ci": "eslint . --max-warnings 0",
+    "format": "prettier --check .",
+    "format:fix": "prettier --write .",
+    "test": "vitest run",
+    "test:ci": "vitest run --coverage",
+    "typecheck": "tsc --noEmit"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

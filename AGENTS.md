@@ -106,7 +106,7 @@ All code execution and filesystem operations must respect environment boundaries
 
 ## Project Architecture Overview
 
-The project is organized as a pnpm monorepo with three main packages:
+The project is organized as a pnpm monorepo with the following packages:
 
 ### Core Package (`packages/ai-code-agents`)
 
@@ -141,6 +141,10 @@ Utilities for implementing AI Code agents execution environments.
 ### Just Bash Package (`packages/just-bash`)
 
 Execution environment for coding agents using the "just-bash" simulated bash environment.
+
+### Vercel Sandbox Package (`packages/vercel-sandbox`)
+
+Execution environment for coding agents using Vercel Sandbox.
 
 ## Directory Structure
 

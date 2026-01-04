@@ -99,9 +99,36 @@ export interface CommandLineEnvironmentInterface extends FilesystemEnvironmentIn
   runCommand(command: string): Promise<RunCommandResult>;
 }
 
+/**
+ * Interface for environments that support explicit shutdown/cleanup.
+ *
+ * Environments implementing this interface may hold resources (connections,
+ * sandboxes, containers) that should be released when no longer needed.
+ */
+export interface ShutdownableEnvironmentInterface {
+  /**
+   * Shuts down the environment and releases any held resources.
+   *
+   * @returns A promise that resolves when shutdown is complete.
+   */
+  shutdown(): Promise<void>;
+}
+
 export type Environment =
   | FilesystemEnvironmentInterface
   | CommandLineEnvironmentInterface;
+
+/**
+ * Type guard to check if an environment supports shutdown.
+ *
+ * @param env - The environment to check.
+ * @returns True if the environment implements ShutdownableEnvironmentInterface.
+ */
+export function isShutdownable(
+  env: Environment,
+): env is Environment & ShutdownableEnvironmentInterface {
+  return 'shutdown' in env && typeof env.shutdown === 'function';
+}
 
 // These types must be compatible with or subtypes of the LanguageModelV3ToolResultOutput type from '@ai-sdk/provider'.
 type ModelTextResult = { type: 'text'; value: string };

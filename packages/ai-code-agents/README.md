@@ -65,10 +65,14 @@ Environments provide sandboxed execution contexts for agents. All tools are buil
 - `unsafe-local` - Local filesystem with command execution (development only)
 - `mock-filesystem` - In-memory filesystem for testing
 
+**Additional:**
+
+- [`@ai-code-agents/just-bash`](https://www.npmjs.com/package/@ai-code-agents/just-bash) - Simulated bash environments using "just-bash"
+- [`@ai-code-agents/vercel-sandbox`](https://www.npmjs.com/package/@ai-code-agents/vercel-sandbox) - Vercel sandbox environments
+
 **Planned:**
 
 - `e2b` - E2B cloud sandboxes
-- `vercel-sandbox` - Vercel sandbox environments
 
 ### Tools
 

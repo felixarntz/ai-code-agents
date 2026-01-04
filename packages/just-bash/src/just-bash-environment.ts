@@ -2,7 +2,7 @@ import { Bash } from 'just-bash';
 import { UnixEnvironmentBase } from '@ai-code-agents/environment-utils';
 
 export type JustBashEnvironmentConfig = {
-  initialFiles?: Map<string, string>;
+  initialFiles?: Record<string, string>;
   directoryPath?: string;
   env?: Record<string, string>;
 };
@@ -25,11 +25,8 @@ export class JustBashEnvironment extends UnixEnvironmentBase<JustBashEnvironment
 
     const { initialFiles, directoryPath, env } = this._envConfig;
 
-    // Convert Map<string, string> to Record<string, string> for just-bash.
-    const files = initialFiles ? Object.fromEntries(initialFiles) : undefined;
-
     this._bash = new Bash({
-      files,
+      files: initialFiles,
       ...(directoryPath ? { cwd: directoryPath } : {}),
       env,
     });

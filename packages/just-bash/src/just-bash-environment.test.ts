@@ -34,10 +34,10 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should create an environment with initial files', () => {
-      const initialFiles = new Map([
-        ['/test.txt', 'Hello, World!'],
-        ['/data/config.json', '{"key": "value"}'],
-      ]);
+      const initialFiles = {
+        '/test.txt': 'Hello, World!',
+        '/data/config.json': '{"key": "value"}',
+      };
       const env = new JustBashEnvironment({ initialFiles });
       expect(env.name).toBe('just-bash');
     });
@@ -55,7 +55,7 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should create an environment with all config options', () => {
-      const initialFiles = new Map([['/test.txt', 'content']]);
+      const initialFiles = { '/test.txt': 'content' };
       const env = new JustBashEnvironment({
         initialFiles,
         directoryPath: '/app',
@@ -139,7 +139,7 @@ describe('JustBashEnvironment', () => {
 
   describe('file operations via inherited methods', () => {
     it('should read a file that was initialized', async () => {
-      const initialFiles = new Map([['/home/user/test.txt', 'file content']]);
+      const initialFiles = { '/home/user/test.txt': 'file content' };
       const env = new JustBashEnvironment({
         initialFiles,
         directoryPath: '/home/user',
@@ -159,7 +159,7 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should throw error when reading non-existent file', async () => {
-      const initialFiles = new Map([['/home/user/exists.txt', 'content']]);
+      const initialFiles = { '/home/user/exists.txt': 'content' };
       const env = new JustBashEnvironment({
         initialFiles,
         directoryPath: '/home/user',
@@ -174,7 +174,7 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should delete a file', async () => {
-      const initialFiles = new Map([['/home/user/todelete.txt', 'content']]);
+      const initialFiles = { '/home/user/todelete.txt': 'content' };
       const env = new JustBashEnvironment({
         initialFiles,
         directoryPath: '/home/user',
@@ -191,9 +191,9 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should move a file', async () => {
-      const initialFiles = new Map([
-        ['/home/user/source.txt', 'source content'],
-      ]);
+      const initialFiles = {
+        '/home/user/source.txt': 'source content',
+      };
       const env = new JustBashEnvironment({
         initialFiles,
         directoryPath: '/home/user',
@@ -209,9 +209,9 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should copy a file', async () => {
-      const initialFiles = new Map([
-        ['/home/user/original.txt', 'original content'],
-      ]);
+      const initialFiles = {
+        '/home/user/original.txt': 'original content',
+      };
       const env = new JustBashEnvironment({
         initialFiles,
         directoryPath: '/home/user',
@@ -228,7 +228,7 @@ describe('JustBashEnvironment', () => {
 
   describe('directory operations', () => {
     it('should work with custom cwd', async () => {
-      const initialFiles = new Map([['/app/data.txt', 'app data']]);
+      const initialFiles = { '/app/data.txt': 'app data' };
       const env = new JustBashEnvironment({
         initialFiles,
         directoryPath: '/app',
@@ -372,11 +372,11 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should support glob patterns', async () => {
-      const initialFiles = new Map([
-        ['/home/user/file1.txt', 'content1'],
-        ['/home/user/file2.txt', 'content2'],
-        ['/home/user/other.md', 'markdown'],
-      ]);
+      const initialFiles = {
+        '/home/user/file1.txt': 'content1',
+        '/home/user/file2.txt': 'content2',
+        '/home/user/other.md': 'markdown',
+      };
       const env = new JustBashEnvironment({
         initialFiles,
         directoryPath: '/home/user',
@@ -393,7 +393,7 @@ describe('JustBashEnvironment', () => {
 
   describe('built-in commands', () => {
     it('should support cat command', async () => {
-      const initialFiles = new Map([['/home/user/test.txt', 'test content']]);
+      const initialFiles = { '/home/user/test.txt': 'test content' };
       const env = new JustBashEnvironment({
         initialFiles,
         directoryPath: '/home/user',
@@ -406,9 +406,9 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should support grep command', async () => {
-      const initialFiles = new Map([
-        ['/home/user/data.txt', 'line1\nline2 match\nline3'],
-      ]);
+      const initialFiles = {
+        '/home/user/data.txt': 'line1\nline2 match\nline3',
+      };
       const env = new JustBashEnvironment({
         initialFiles,
         directoryPath: '/home/user',
@@ -497,10 +497,10 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should support find command', async () => {
-      const initialFiles = new Map([
-        ['/home/user/dir/file1.txt', 'content1'],
-        ['/home/user/dir/file2.txt', 'content2'],
-      ]);
+      const initialFiles = {
+        '/home/user/dir/file1.txt': 'content1',
+        '/home/user/dir/file2.txt': 'content2',
+      };
       const env = new JustBashEnvironment({
         initialFiles,
         directoryPath: '/home/user',
@@ -516,9 +516,9 @@ describe('JustBashEnvironment', () => {
     });
 
     it('should support jq command for JSON processing', async () => {
-      const initialFiles = new Map([
-        ['/home/user/data.json', '{"name": "test", "value": 42}'],
-      ]);
+      const initialFiles = {
+        '/home/user/data.json': '{"name": "test", "value": 42}',
+      };
       const env = new JustBashEnvironment({
         initialFiles,
         directoryPath: '/home/user',

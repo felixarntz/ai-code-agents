@@ -2,7 +2,7 @@ import path from 'node:path';
 import { FilesystemEnvironmentBase } from '@ai-code-agents/environment-utils';
 
 export type MockFilesystemEnvironmentConfig = {
-  initialFiles?: Map<string, string>;
+  initialFiles?: Record<string, string>;
   directoryPath?: string;
 };
 
@@ -27,7 +27,9 @@ export class MockFilesystemEnvironment extends FilesystemEnvironmentBase<MockFil
     super(config);
 
     const { initialFiles, directoryPath } = this._envConfig;
-    this.files = initialFiles ?? new Map<string, string>();
+    this.files = initialFiles
+      ? new Map(Object.entries(initialFiles))
+      : new Map<string, string>();
     this._preparePath = directoryPath
       ? (filePath: string) => path.join(directoryPath, filePath)
       : (filePath: string) => filePath;

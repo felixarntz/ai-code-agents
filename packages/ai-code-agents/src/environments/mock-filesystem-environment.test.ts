@@ -8,10 +8,10 @@ import { MockFilesystemEnvironment } from './mock-filesystem-environment';
  */
 function createDefaultTestEnvironment(): MockFilesystemEnvironment {
   return new MockFilesystemEnvironment({
-    initialFiles: new Map([
-      ['existing-file.txt', 'Hello, World!'],
-      ['another-file.txt', 'Some content'],
-    ]),
+    initialFiles: {
+      'existing-file.txt': 'Hello, World!',
+      'another-file.txt': 'Some content',
+    },
   });
 }
 

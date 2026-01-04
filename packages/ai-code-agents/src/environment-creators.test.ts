@@ -14,7 +14,7 @@ describe('createEnvironment', () => {
     });
 
     it('should create a MockFilesystemEnvironment with initialFiles', () => {
-      const initialFiles = new Map([['test.txt', 'content']]);
+      const initialFiles = { 'test.txt': 'content' };
       const env = createEnvironment('mock-filesystem', { initialFiles });
       expect(env).toBeInstanceOf(MockFilesystemEnvironment);
       expect(env.name).toBe('mock-filesystem');
@@ -29,7 +29,7 @@ describe('createEnvironment', () => {
     });
 
     it('should create a MockFilesystemEnvironment with full config', () => {
-      const initialFiles = new Map([['test.txt', 'content']]);
+      const initialFiles = { 'test.txt': 'content' };
       const env = createEnvironment('mock-filesystem', {
         initialFiles,
         directoryPath: '/test',

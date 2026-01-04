@@ -1,7 +1,7 @@
-import type {
-  Environment,
-  CommandLineEnvironmentInterface,
-  EnvironmentToolBase,
+import {
+  isCommandLine,
+  type Environment,
+  type EnvironmentToolBase,
 } from '@ai-code-agents/environment-utils';
 import type { Tool } from '@ai-sdk/provider-utils';
 import { ReadFileTool, ReadFileToolName } from './tools/read-file-tool';
@@ -184,7 +184,7 @@ export function createToolsForEnvironment(
 ): Record<string, ToolWithIO> {
   const sanitizedToolsDefinition = sanitizeToolsDefinition(toolsDefinition);
 
-  const isCliEnvironment = 'runCommand' in environment;
+  const isCliEnvironment = isCommandLine(environment);
 
   const tools: Record<string, ToolWithIO> = {};
   for (const toolDefinition of sanitizedToolsDefinition) {
@@ -212,9 +212,7 @@ export function createToolsForEnvironment(
 
     tools[toolNameToUse] = createEnvironmentTool(
       actualToolName,
-      isCliEnvironment
-        ? (environment as CommandLineEnvironmentInterface)
-        : environment,
+      environment,
       toolConfig,
     );
   }

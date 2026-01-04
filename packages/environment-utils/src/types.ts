@@ -119,6 +119,18 @@ export type Environment =
   | CommandLineEnvironmentInterface;
 
 /**
+ * Type guard to check if an environment supports command-line operations.
+ *
+ * @param env - The environment to check.
+ * @returns True if the environment implements CommandLineEnvironmentInterface.
+ */
+export function isCommandLine(
+  env: Environment,
+): env is CommandLineEnvironmentInterface {
+  return 'runCommand' in env && typeof env.runCommand === 'function';
+}
+
+/**
  * Type guard to check if an environment supports shutdown.
  *
  * @param env - The environment to check.

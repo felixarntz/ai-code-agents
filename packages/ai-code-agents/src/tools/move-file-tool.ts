@@ -1,16 +1,14 @@
 import { z } from 'zod';
 import {
+  EnvironmentToolBase,
+  type EnvironmentToolMetadata,
   MoveFileResult,
   type FilesystemEnvironmentInterface,
   type ToolConfig,
   type ToolExample,
   type ModelToolResultToFormat,
   type ModelFormattedToolResult,
-} from '../types';
-import {
-  EnvironmentToolBase,
-  type EnvironmentToolMetadata,
-} from './environment-tool-base';
+} from '@ai-code-agents/environment-utils';
 
 export const MoveFileToolName = 'move_file';
 

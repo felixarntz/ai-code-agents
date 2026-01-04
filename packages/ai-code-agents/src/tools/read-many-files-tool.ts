@@ -1,17 +1,15 @@
 import { z } from 'zod';
 import {
+  EnvironmentToolBase,
+  type EnvironmentToolMetadata,
   ReadFileResult,
   type FilesystemEnvironmentInterface,
   type ToolConfig,
   type ToolExample,
   type ModelToolResultToFormat,
   type ModelFormattedToolResult,
-} from '../types';
+} from '@ai-code-agents/environment-utils';
 import { getLanguageIdentifierFromFilePath } from '../util/get-language-identifier-from-file-path';
-import {
-  EnvironmentToolBase,
-  type EnvironmentToolMetadata,
-} from './environment-tool-base';
 
 export const ReadManyFilesToolName = 'read_many_files';
 

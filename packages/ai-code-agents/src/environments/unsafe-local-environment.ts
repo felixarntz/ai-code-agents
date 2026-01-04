@@ -1,6 +1,5 @@
 import { exec } from 'node:child_process';
-import { escapeCommandArg } from '../util/escape-command-arg';
-import { UnixEnvironmentBase } from './unix-environment-base';
+import { UnixEnvironmentBase, escapeCommandArg } from '@ai-code-agents/environment-utils';
 
 export type UnsafeLocalEnvironmentConfig = {
   directoryPath: string;

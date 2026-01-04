@@ -1,17 +1,15 @@
 import { z } from 'zod';
 import {
+  EnvironmentToolBase,
+  type EnvironmentToolMetadata,
   type CommandLineEnvironmentInterface,
   type ToolConfig,
   type ToolExample,
   type ModelToolResultToFormat,
   type ModelFormattedToolResult,
-} from '../types';
-import { escapeCommandArg } from '../util/escape-command-arg';
+  escapeCommandArg,
+} from '@ai-code-agents/environment-utils';
 import { buildTreeFromFiles } from '../util/build-tree-from-files';
-import {
-  EnvironmentToolBase,
-  type EnvironmentToolMetadata,
-} from './environment-tool-base';
 
 export const GetProjectFileStructureToolName = 'get_project_file_structure';
 

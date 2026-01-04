@@ -1,6 +1,9 @@
+import type {
+  Environment,
+  CommandLineEnvironmentInterface,
+  EnvironmentToolBase,
+} from '@ai-code-agents/environment-utils';
 import type { Tool } from '@ai-sdk/provider-utils';
-import type { Environment, CommandLineEnvironmentInterface } from './types';
-import type { EnvironmentToolBase } from './tools/environment-tool-base';
 import { ReadFileTool, ReadFileToolName } from './tools/read-file-tool';
 import { WriteFileTool, WriteFileToolName } from './tools/write-file-tool';
 import { DeleteFileTool, DeleteFileToolName } from './tools/delete-file-tool';

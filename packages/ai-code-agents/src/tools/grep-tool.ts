@@ -1,17 +1,15 @@
 import { z } from 'zod';
 import {
+  EnvironmentToolBase,
+  type EnvironmentToolMetadata,
   type CommandLineEnvironmentInterface,
   type ToolConfig,
   type ToolExample,
   type ModelToolResultToFormat,
   type ModelFormattedToolResult,
-} from '../types';
-import { escapeCommandArg } from '../util/escape-command-arg';
-import { validateRelativePath } from '../util/validate-relative-path';
-import {
-  EnvironmentToolBase,
-  type EnvironmentToolMetadata,
-} from './environment-tool-base';
+  escapeCommandArg,
+  validateRelativePath,
+} from '@ai-code-agents/environment-utils';
 import { GlobTool } from './glob-tool';
 
 export const GrepToolName = 'grep';

@@ -1,4 +1,4 @@
-import type { FilesystemEnvironmentBase } from './environments/filesystem-environment-base';
+import type { FilesystemEnvironmentBase } from '@ai-code-agents/environment-utils';
 import {
   DockerEnvironment,
   DockerEnvironmentName,

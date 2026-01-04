@@ -1,12 +1,15 @@
 import { describe, it, expect, vi } from 'vitest';
 import { z } from 'zod';
+import type {
+  ToolInterface,
+  ToolExample,
+} from '@ai-code-agents/environment-utils';
 import {
   getAdditionalInstructions,
   formatExampleForInstructions,
   getCodeAgentConstraints,
   getCodeAgentFinalReminder,
 } from './instructions';
-import type { ToolInterface, ToolExample } from './types';
 
 describe('getAdditionalInstructions', () => {
   const mockToolWithExamples: ToolInterface<unknown, unknown> = {

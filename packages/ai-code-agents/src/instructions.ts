@@ -1,5 +1,5 @@
+import type { ToolExample } from '@ai-code-agents/environment-utils';
 import type { Tool } from '@ai-sdk/provider-utils';
-import type { ToolExample } from './types';
 import { SubmitToolName } from './tools/submit-tool';
 
 // See https://github.com/galfrevn/promptsmith.

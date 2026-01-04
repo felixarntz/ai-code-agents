@@ -1,12 +1,13 @@
 import type { ToolExecutionOptions } from 'ai';
 import { z } from 'zod';
-import type {
-  ToolConfig,
-  ToolExample,
-  ModelToolResultToFormat,
-  ModelFormattedToolResult,
-} from '../types';
-import { ToolBase, type ToolMetadata } from './tool-base';
+import {
+  ToolBase,
+  type ToolMetadata,
+  type ToolConfig,
+  type ToolExample,
+  type ModelToolResultToFormat,
+  type ModelFormattedToolResult,
+} from '@ai-code-agents/environment-utils';
 
 export const SubmitToolName = 'submit';
 

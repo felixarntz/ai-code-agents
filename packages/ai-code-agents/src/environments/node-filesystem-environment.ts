@@ -1,6 +1,6 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
-import { FilesystemEnvironmentBase } from './filesystem-environment-base';
+import { FilesystemEnvironmentBase } from '@ai-code-agents/environment-utils';
 
 export type NodeFilesystemEnvironmentConfig = {
   directoryPath: string;

@@ -7,9 +7,5 @@
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist"],
-  "references": [
-    {
-      "path": "../environment-utils"
-    }
-  ]
+  "references": []
 }

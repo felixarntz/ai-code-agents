@@ -8,26 +8,18 @@ A core design principle is **environment abstraction**: all tools are built agai
 
 ## Commands & Scripts
 
-**Build:**
-
 - `pnpm build` - Build all packages in the monorepo
-
-**Linting & Formatting:**
-
 - `pnpm lint` - Run ESLint on all files
 - `pnpm lint:fix` - Run ESLint and automatically fix issues
 - `pnpm format` - Format all files with Prettier
-
-**Testing:**
-
 - `pnpm test` - Run tests in all packages
-- `pnpm --filter ai-code-agents test` - Run tests only for the `ai-code-agents` package
-- `pnpm --filter cli test` - Run tests only for the `cli` package
 - `pnpm typecheck` - Run TypeScript type checking in all packages
+- `pnpm ai-code-agents` - Run the AI Code Agents CLI tool in debug mode
 
-**Development:**
+To run any of these commands for a specific package, use `pnpm --filter <package> <command>`. Examples:
 
-- `pnpm ai-code-agents` - Run the CLI tool in debug mode
+- `pnpm --filter ai-code-agents test` - Run tests only for the `ai-code-agents` package
+- `pnpm --filter @ai-code-agents/environment-utils build` - Build only the `@ai-code-agents/environment-utils` package
 
 ## Coding Standards & Compatibility Constraints
 

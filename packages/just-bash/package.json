@@ -4,8 +4,16 @@
   "description": "Execution environment for coding agents using the \"just-bash\" simulated bash environment.",
   "license": "MIT",
   "type": "module",
+  "sideEffects": false,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
   "files": [
     "dist/**/*"
   ],

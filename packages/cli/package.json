@@ -9,6 +9,13 @@
   },
   "main": "dist/cli.js",
   "types": "dist/cli.d.ts",
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "types": "./dist/cli.d.ts",
+      "import": "./dist/cli.js"
+    }
+  },
   "files": [
     "dist/**/*"
   ],

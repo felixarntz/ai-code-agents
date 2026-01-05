@@ -23,7 +23,7 @@
     "lib": ["esnext"],
     "target": "esnext",
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "types": ["node", "vitest/globals"]
   },
   "exclude": ["node_modules"]

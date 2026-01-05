@@ -135,8 +135,9 @@ function matchSegment(pattern: string, segment: string): boolean {
 async function getClosestGitIgnorePath(
   env: CommandLineEnvironmentInterface,
 ): Promise<string> {
+  // Use POSIX-compliant [ ] syntax instead of bash-specific [[ ]] for cross-platform compatibility.
   const command =
-    'd=$PWD; while [[ -n "$d" && ! -f "$d/.gitignore" ]]; do d=${d%/*}; done; [[ -f "$d/.gitignore" ]] && echo "$d/.gitignore"';
+    'd=$PWD; while [ -n "$d" ] && [ ! -f "$d/.gitignore" ]; do d=${d%/*}; done; [ -f "$d/.gitignore" ] && echo "$d/.gitignore"';
   const { stdout } = await env.runCommand(command);
   return stdout.trim();
 }

@@ -222,4 +222,54 @@ describe('GetProjectFileStructureTool', () => {
       expect.stringContaining('while'),
     );
   });
+
+  it('should exclude git ignored files when excludeGitIgnored is true', async () => {
+    (mockEnv.runCommand as Mock).mockImplementation(async (command: string) => {
+      // Mock pwd command.
+      if (command === 'pwd') {
+        return { command, exitCode: 0, stdout: '/project', stderr: '' };
+      }
+      // Mock gitignore lookup using POSIX-compliant [ ] syntax.
+      if (command.includes('while') && command.includes('.gitignore')) {
+        return {
+          command,
+          exitCode: 0,
+          stdout: '/project/.gitignore',
+          stderr: '',
+        };
+      }
+      // Mock cat .gitignore.
+      if (command.includes('cat') && command.includes('.gitignore')) {
+        return {
+          command,
+          exitCode: 0,
+          stdout: 'node_modules/\ndist/\n',
+          stderr: '',
+        };
+      }
+      // Mock find command - return files excluding gitignored.
+      if (command.includes('find')) {
+        return {
+          command,
+          exitCode: 0,
+          stdout: 'src/index.ts\npackage.json\n',
+          stderr: '',
+        };
+      }
+      return { command, exitCode: 0, stdout: '', stderr: '' };
+    });
+
+    const tool = new GetProjectFileStructureTool(mockEnv);
+    const input = { excludeGitIgnored: true };
+
+    const result = await tool.execute(input, {} as never);
+
+    expect(result.excludeGitIgnored).toBe(true);
+    expect(result.files).toEqual(['src/index.ts', 'package.json']);
+
+    // Verify the find command includes exclusion patterns.
+    expect(mockEnv.runCommand).toHaveBeenCalledWith(
+      expect.stringContaining('-not -path'),
+    );
+  });
 });

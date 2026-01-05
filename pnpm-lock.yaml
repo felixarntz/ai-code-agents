@@ -166,8 +166,8 @@ importers:
         specifier: workspace:*
         version: link:../environment-utils
       just-bash:
-        specifier: ^1.4.1
-        version: 1.4.1(ai@6.0.6(zod@4.3.4))(zod@4.3.4)
+        specifier: ^1.4.2
+        version: 1.4.2(ai@6.0.6(zod@4.3.4))(zod@4.3.4)
     devDependencies:
       tsup:
         specifier: ^8.5.0
@@ -2075,8 +2075,8 @@ packages:
   jsonlines@0.1.1:
     resolution: {integrity: sha512-ekDrAGso79Cvf+dtm+mL8OBI2bmAOt3gssYs833De/C9NmIpWDWyUO4zPgB5x2/OhY366dkhgfPMYfwZF7yOZA==}
 
-  just-bash@1.4.1:
-    resolution: {integrity: sha512-fVcq3lPC8+ug6kLdySWrv+sxFfRLJ31iBDvT+7obY3wY4fKdo8SvRLsfTQPVgeYVRnb412JkOvAsy0HNE7+64A==}
+  just-bash@1.4.2:
+    resolution: {integrity: sha512-WTtQzFGfIgJggEzZaXuX9pwI36AnWhWo03Y4yuiU/R97CTr4c2mushT9T+tbXP2XxNnWmSZdTYzGFM2To3SM0Q==}
     hasBin: true
     peerDependencies:
       ai: ^6.0.0
@@ -4662,7 +4662,7 @@ snapshots:
 
   jsonlines@0.1.1: {}
 
-  just-bash@1.4.1(ai@6.0.6(zod@4.3.4))(zod@4.3.4):
+  just-bash@1.4.2(ai@6.0.6(zod@4.3.4))(zod@4.3.4):
     dependencies:
       diff: 8.0.2
       file-type: 21.3.0

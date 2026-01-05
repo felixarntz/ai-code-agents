@@ -1,6 +1,6 @@
 {
   "name": "@ai-code-agents/just-bash",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Execution environment for coding agents using the \"just-bash\" simulated bash environment.",
   "license": "MIT",
   "type": "module",
@@ -46,7 +46,7 @@
   ],
   "dependencies": {
     "@ai-code-agents/environment-utils": "workspace:*",
-    "just-bash": "^1.4.1"
+    "just-bash": "^1.4.2"
   },
   "devDependencies": {
     "tsup": "^8.5.0",

@@ -23,6 +23,8 @@ You will need:
 npm install ai-code-agents ai zod
 ```
 
+To explore the SDK via a command-line interface, see [`@ai-code-agents/cli`](https://www.npmjs.com/package/@ai-code-agents/cli).
+
 ## Quick Start
 
 ```typescript

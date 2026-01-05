@@ -40,31 +40,40 @@ describe('GrepTool', () => {
       searchPattern: '**/*.ts',
     };
 
-    // Mock find command for GlobTool
-    (mockEnv.runCommand as Mock).mockResolvedValueOnce({
-      stdout: './file1.ts\n./file2.ts\n./file3.js',
-      stderr: '',
-      exitCode: 0,
-    });
-
-    // Mock grep command
-    (mockEnv.runCommand as Mock).mockResolvedValueOnce({
-      stdout: 'file1.ts:10:test match\nfile2.ts:20:another test',
-      stderr: '',
-      exitCode: 0,
+    // Mock commands
+    (mockEnv.runCommand as Mock).mockImplementation(async (command: string) => {
+      if (command.includes('pwd')) {
+        return { command, exitCode: 0, stdout: '/project', stderr: '' };
+      }
+      if (command.includes('while')) {
+        return { command, exitCode: 0, stdout: '', stderr: '' };
+      }
+      if (command.includes('find')) {
+        return {
+          command,
+          exitCode: 0,
+          stdout: './file1.ts\n./file2.ts\n./file3.js',
+          stderr: '',
+        };
+      }
+      if (command.includes('grep')) {
+        return {
+          command,
+          exitCode: 0,
+          stdout: 'file1.ts:10:test match\nfile2.ts:20:another test',
+          stderr: '',
+        };
+      }
+      return { command, exitCode: 0, stdout: '', stderr: '' };
     });
 
     const result = await tool.execute(input, {} as never);
 
-    expect(mockEnv.runCommand).toHaveBeenCalledTimes(2);
-    // First call is find (from GlobTool)
-    expect(mockEnv.runCommand).toHaveBeenNthCalledWith(
-      1,
+    // First call is pwd, second is while (gitignore), third is find, fourth is grep
+    expect(mockEnv.runCommand).toHaveBeenCalledWith(
       expect.stringContaining('find'),
     );
-    // Second call is grep
-    expect(mockEnv.runCommand).toHaveBeenNthCalledWith(
-      2,
+    expect(mockEnv.runCommand).toHaveBeenCalledWith(
       expect.stringContaining("grep -n -H -I -E 'test'"),
     );
 
@@ -87,18 +96,31 @@ describe('GrepTool', () => {
       regexpPattern: 'notfound',
     };
 
-    // Mock find command
-    (mockEnv.runCommand as Mock).mockResolvedValueOnce({
-      stdout: './file1.ts',
-      stderr: '',
-      exitCode: 0,
-    });
-
-    // Mock grep command returning exit code 1 (no matches)
-    (mockEnv.runCommand as Mock).mockResolvedValueOnce({
-      stdout: '',
-      stderr: '',
-      exitCode: 1,
+    // Mock commands
+    (mockEnv.runCommand as Mock).mockImplementation(async (command: string) => {
+      if (command.includes('pwd')) {
+        return { command, exitCode: 0, stdout: '/project', stderr: '' };
+      }
+      if (command.includes('while')) {
+        return { command, exitCode: 0, stdout: '', stderr: '' };
+      }
+      if (command.includes('find')) {
+        return {
+          command,
+          exitCode: 0,
+          stdout: './file1.ts',
+          stderr: '',
+        };
+      }
+      if (command.includes('grep')) {
+        return {
+          command,
+          exitCode: 1,
+          stdout: '',
+          stderr: '',
+        };
+      }
+      return { command, exitCode: 0, stdout: '', stderr: '' };
     });
 
     const result = await tool.execute(input, {} as never);
@@ -109,40 +131,52 @@ describe('GrepTool', () => {
   it('should include context lines when requested', async () => {
     const tool = new GrepTool(mockEnv);
     const input = {
-      regexpPattern: 'match',
-      contextLines: 1,
+      regexpPattern: 'test',
+      contextLines: 2,
     };
 
-    // Mock find command
-    (mockEnv.runCommand as Mock).mockResolvedValueOnce({
-      stdout: './file1.ts',
-      stderr: '',
-      exitCode: 0,
-    });
-
-    // Mock grep command
-    (mockEnv.runCommand as Mock).mockResolvedValueOnce({
-      stdout: 'file1.ts:2:match line',
-      stderr: '',
-      exitCode: 0,
+    // Mock commands
+    (mockEnv.runCommand as Mock).mockImplementation(async (command: string) => {
+      if (command.includes('pwd')) {
+        return { command, exitCode: 0, stdout: '/project', stderr: '' };
+      }
+      if (command.includes('while')) {
+        return { command, exitCode: 0, stdout: '', stderr: '' };
+      }
+      if (command.includes('find')) {
+        return {
+          command,
+          exitCode: 0,
+          stdout: './file1.ts',
+          stderr: '',
+        };
+      }
+      if (command.includes('grep')) {
+        return {
+          command,
+          exitCode: 0,
+          stdout: 'file1.ts:3:test match',
+          stderr: '',
+        };
+      }
+      return { command, exitCode: 0, stdout: '', stderr: '' };
     });
 
     // Mock readFile for context
-    (mockEnv.readFile as Mock).mockImplementation(async (path: string) => {
-      if (path === 'file1.ts') {
-        return {
-          content: 'line 1\nmatch line\nline 3',
-        };
-      }
-      throw new Error('File not found');
+    (mockEnv.readFile as Mock).mockResolvedValue({
+      content: 'line 8\nline 9\ntest match\nline 11\nline 12',
     });
 
     const result = await tool.execute(input, {} as never);
 
+    expect(mockEnv.runCommand).toHaveBeenCalledWith(
+      expect.stringContaining('grep'),
+    );
     expect(mockEnv.readFile).toHaveBeenCalledWith('file1.ts');
     expect(result.matches).toHaveLength(1);
-    expect(result.matches[0].beforeContext).toEqual(['line 1']);
-    expect(result.matches[0].afterContext).toEqual(['line 3']);
+    expect(result.matches[0].line).toBe('test match');
+    expect(result.matches[0].beforeContext).toEqual(['line 8', 'line 9']);
+    expect(result.matches[0].afterContext).toEqual(['line 11', 'line 12']);
   });
 
   it('should batch files for grep command', async () => {
@@ -151,28 +185,40 @@ describe('GrepTool', () => {
       regexpPattern: 'test',
     };
 
-    // Generate 60 files to trigger batching (BATCH_SIZE is 50)
-    const files = Array.from({ length: 60 }, (_, i) => `./file${i}.ts`).join(
+    // Mock many files for GlobTool
+    const files = Array.from({ length: 150 }, (_, i) => `./file${i}.ts`).join(
       '\n',
     );
-
-    // Mock find command
-    (mockEnv.runCommand as Mock).mockResolvedValueOnce({
-      stdout: files,
-      stderr: '',
-      exitCode: 0,
-    });
-
-    // Mock grep command calls
-    (mockEnv.runCommand as Mock).mockResolvedValue({
-      stdout: '',
-      stderr: '',
-      exitCode: 1,
+    (mockEnv.runCommand as Mock).mockImplementation(async (command: string) => {
+      if (command.includes('pwd')) {
+        return { command, exitCode: 0, stdout: '/project', stderr: '' };
+      }
+      if (command.includes('while')) {
+        return { command, exitCode: 0, stdout: '', stderr: '' };
+      }
+      if (command.includes('find')) {
+        return {
+          command,
+          exitCode: 0,
+          stdout: files,
+          stderr: '',
+        };
+      }
+      if (command.includes('grep')) {
+        return {
+          command,
+          exitCode: 0,
+          stdout: '',
+          stderr: '',
+        };
+      }
+      return { command, exitCode: 0, stdout: '', stderr: '' };
     });
 
     await tool.execute(input, {} as never);
 
-    // 1 call for find, 2 calls for grep (50 + 10 files)
-    expect(mockEnv.runCommand).toHaveBeenCalledTimes(3);
+    // Should be called multiple times for grep due to batching (150 files, batch size 100)
+    // pwd (1) + while (1) + find (1) + grep (2) = 5
+    expect(mockEnv.runCommand).toHaveBeenCalledTimes(5);
   });
 });

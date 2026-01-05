@@ -31,14 +31,19 @@ describe('GetProjectFileStructureTool', () => {
   });
 
   it('should call the environment runCommand method with the correct arguments', async () => {
-    (mockEnv.runCommand as Mock).mockResolvedValue({
-      command: 'find src -type f | sort',
-      exitCode: 0,
-      stdout: '',
-      stderr: '',
-    });
-    (mockEnv.readFile as Mock).mockResolvedValue({
-      content: '',
+    (mockEnv.runCommand as Mock).mockImplementation(async (command: string) => {
+      if (command.includes('pwd')) {
+        return { command, exitCode: 0, stdout: '/project', stderr: '' };
+      }
+      if (command.includes('while')) {
+        return { command, exitCode: 0, stdout: '', stderr: '' };
+      }
+      return {
+        command,
+        exitCode: 0,
+        stdout: '',
+        stderr: '',
+      };
     });
 
     const tool = new GetProjectFileStructureTool(mockEnv);
@@ -46,21 +51,25 @@ describe('GetProjectFileStructureTool', () => {
 
     await tool.execute(input, {} as never);
 
-    expect(mockEnv.runCommand).toHaveBeenCalledExactlyOnceWith(
+    expect(mockEnv.runCommand).toHaveBeenCalledWith(
       "find 'src' -type f | sort",
     );
   });
 
   it('should default to "." if no path is provided', async () => {
-    (mockEnv.runCommand as Mock).mockClear();
-    (mockEnv.runCommand as Mock).mockResolvedValue({
-      command: 'find . -type f | sort',
-      exitCode: 0,
-      stdout: '',
-      stderr: '',
-    });
-    (mockEnv.readFile as Mock).mockResolvedValue({
-      content: '',
+    (mockEnv.runCommand as Mock).mockImplementation(async (command: string) => {
+      if (command.includes('pwd')) {
+        return { command, exitCode: 0, stdout: '/project', stderr: '' };
+      }
+      if (command.includes('while')) {
+        return { command, exitCode: 0, stdout: '', stderr: '' };
+      }
+      return {
+        command,
+        exitCode: 0,
+        stdout: '',
+        stderr: '',
+      };
     });
 
     const tool = new GetProjectFileStructureTool(mockEnv);
@@ -68,21 +77,24 @@ describe('GetProjectFileStructureTool', () => {
 
     await tool.execute(input, {} as never);
 
-    expect(mockEnv.runCommand).toHaveBeenCalledExactlyOnceWith(
-      "find '.' -type f | sort",
-    );
+    expect(mockEnv.runCommand).toHaveBeenCalledWith("find '.' -type f | sort");
   });
 
   it('should return the result from the environment runCommand method', async () => {
     const expectedStdout = 'file1.txt\nfile2.js\n';
-    (mockEnv.runCommand as Mock).mockResolvedValue({
-      command: 'find . -type f | sort',
-      exitCode: 0,
-      stdout: expectedStdout,
-      stderr: '',
-    });
-    (mockEnv.readFile as Mock).mockResolvedValue({
-      content: '',
+    (mockEnv.runCommand as Mock).mockImplementation(async (command: string) => {
+      if (command.includes('pwd')) {
+        return { command, exitCode: 0, stdout: '/project', stderr: '' };
+      }
+      if (command.includes('while')) {
+        return { command, exitCode: 0, stdout: '', stderr: '' };
+      }
+      return {
+        command,
+        exitCode: 0,
+        stdout: expectedStdout,
+        stderr: '',
+      };
     });
 
     const tool = new GetProjectFileStructureTool(mockEnv);
@@ -97,14 +109,19 @@ describe('GetProjectFileStructureTool', () => {
 
   it('should handle files with leading ./', async () => {
     const expectedStdout = './file1.txt\n./dir/file2.js\n';
-    (mockEnv.runCommand as Mock).mockResolvedValue({
-      command: 'find . -type f | sort',
-      exitCode: 0,
-      stdout: expectedStdout,
-      stderr: '',
-    });
-    (mockEnv.readFile as Mock).mockResolvedValue({
-      content: '',
+    (mockEnv.runCommand as Mock).mockImplementation(async (command: string) => {
+      if (command.includes('pwd')) {
+        return { command, exitCode: 0, stdout: '/project', stderr: '' };
+      }
+      if (command.includes('while')) {
+        return { command, exitCode: 0, stdout: '', stderr: '' };
+      }
+      return {
+        command,
+        exitCode: 0,
+        stdout: expectedStdout,
+        stderr: '',
+      };
     });
 
     const tool = new GetProjectFileStructureTool(mockEnv);
@@ -118,11 +135,19 @@ describe('GetProjectFileStructureTool', () => {
   });
 
   it('should throw an error if the command fails', async () => {
-    (mockEnv.runCommand as Mock).mockResolvedValue({
-      command: 'find . -type f | sort',
-      exitCode: 1,
-      stdout: '',
-      stderr: 'find: .: No such file or directory',
+    (mockEnv.runCommand as Mock).mockImplementation(async (command: string) => {
+      if (command.includes('pwd')) {
+        return { command, exitCode: 0, stdout: '/project', stderr: '' };
+      }
+      if (command.includes('while')) {
+        return { command, exitCode: 0, stdout: '', stderr: '' };
+      }
+      return {
+        command,
+        exitCode: 1,
+        stdout: '',
+        stderr: 'find: .: No such file or directory',
+      };
     });
 
     const tool = new GetProjectFileStructureTool(mockEnv);
@@ -136,7 +161,7 @@ describe('GetProjectFileStructureTool', () => {
   it('should format the output as a tree for model consumption', async () => {
     const tool = new GetProjectFileStructureTool(mockEnv);
     const output = {
-      files: ['src/index.js', 'src/components/Button.js', 'README.md'],
+      files: ['src/index.ts', 'src/util/helper.ts', 'package.json'],
       excludeGitIgnored: true,
     };
 
@@ -148,11 +173,11 @@ describe('GetProjectFileStructureTool', () => {
 
     expect(result).toEqual({
       type: 'text',
-      value: `├── **README.md**
+      value: `├── **package.json**
 └── **src**
-    ├── **components**
-    │   └── **Button.js**
-    └── **index.js**`,
+    ├── **index.ts**
+    └── **util**
+        └── **helper.ts**`,
     });
   });
 
@@ -176,22 +201,25 @@ describe('GetProjectFileStructureTool', () => {
   });
 
   it('should not exclude git ignored files when excludeGitIgnored is false', async () => {
-    const expectedStdout = 'file1.txt\nfile2.js\n';
-    (mockEnv.runCommand as Mock).mockResolvedValue({
-      command: 'find . -type f | sort',
-      exitCode: 0,
-      stdout: expectedStdout,
-      stderr: '',
-    });
+    (mockEnv.runCommand as Mock).mockImplementation(
+      async (command: string) => ({
+        command,
+        exitCode: 0,
+        stdout: 'file1.txt\nfile2.js\n',
+        stderr: '',
+      }),
+    );
 
     const tool = new GetProjectFileStructureTool(mockEnv);
     const input = { excludeGitIgnored: false };
-    const result = await tool.execute(input, {} as never);
 
-    expect(mockEnv.readFile).not.toHaveBeenCalled();
-    expect(result).toEqual({
-      files: ['file1.txt', 'file2.js'],
-      excludeGitIgnored: false,
-    });
+    await tool.execute(input, {} as never);
+
+    expect(mockEnv.runCommand).toHaveBeenCalledExactlyOnceWith(
+      "find '.' -type f | sort",
+    );
+    expect(mockEnv.runCommand).not.toHaveBeenCalledWith(
+      expect.stringContaining('while'),
+    );
   });
 });

@@ -11,6 +11,7 @@ import {
   validateRelativePath,
 } from '@ai-code-agents/environment-utils';
 import { globToRegExp } from '../util/glob-to-reg-exp';
+import { getGitIgnoredPaths } from '../util/get-gitignored-paths';
 
 export const GlobToolName = 'glob';
 
@@ -114,16 +115,7 @@ export class GlobTool extends EnvironmentToolBase<
 
     // Exclude .gitignore patterns if requested.
     if (excludeGitIgnored) {
-      let gitIgnoredPaths: string[] = [];
-      try {
-        const { content: gitignoreContent } = await env.readFile('.gitignore');
-        gitIgnoredPaths = gitignoreContent
-          .split('\n')
-          .map((line) => line.trim())
-          .filter((line) => line && !line.startsWith('#')); // Ignore empty lines and comments.
-      } catch (_error) {
-        // Ignore errors, e.g. if .gitignore does not exist.
-      }
+      const gitIgnoredPaths = await getGitIgnoredPaths(env);
 
       for (const gitIgnoredPath of gitIgnoredPaths) {
         // If the path doesn't end in a slash, it could be a file or a directory. Otherwise, it's a directory.

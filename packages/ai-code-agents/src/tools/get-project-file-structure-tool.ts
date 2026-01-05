@@ -10,6 +10,7 @@ import {
   escapeCommandArg,
 } from '@ai-code-agents/environment-utils';
 import { buildTreeFromFiles } from '../util/build-tree-from-files';
+import { getGitIgnoredPaths } from '../util/get-gitignored-paths';
 
 export const GetProjectFileStructureToolName = 'get_project_file_structure';
 
@@ -92,16 +93,7 @@ export class GetProjectFileStructureTool extends EnvironmentToolBase<
 
     // Exclude .gitignore patterns if requested.
     if (excludeGitIgnored) {
-      let gitIgnoredPaths: string[] = [];
-      try {
-        const { content: gitignoreContent } = await env.readFile('.gitignore');
-        gitIgnoredPaths = gitignoreContent
-          .split('\n')
-          .map((line) => line.trim())
-          .filter((line) => line && !line.startsWith('#')); // Ignore empty lines and comments.
-      } catch (_error) {
-        // Ignore errors, e.g. if .gitignore does not exist.
-      }
+      const gitIgnoredPaths = await getGitIgnoredPaths(env);
 
       for (const gitIgnoredPath of gitIgnoredPaths) {
         // If the path doesn't end in a slash, it could be a file or a directory. Otherwise, it's a directory.

@@ -28,12 +28,22 @@ describe('GlobTool', () => {
 
   it('should find files with a simple pattern', async () => {
     const tool = new GlobTool(mockCmdEnv);
-    vi.mocked(mockCmdEnv.runCommand).mockResolvedValue({
-      command: 'find . -type f',
-      stdout: './src/index.ts\n./src/util.ts',
-      stderr: '',
-      exitCode: 0,
-    });
+    vi.mocked(mockCmdEnv.runCommand).mockImplementation(
+      async (command: string) => {
+        if (command.includes('pwd')) {
+          return { command, exitCode: 0, stdout: '/project', stderr: '' };
+        }
+        if (command.includes('while')) {
+          return { command, exitCode: 0, stdout: '', stderr: '' };
+        }
+        return {
+          command,
+          exitCode: 0,
+          stdout: './src/index.ts\n./src/util.ts',
+          stderr: '',
+        };
+      },
+    );
 
     const output = await tool.execute(
       {
@@ -50,12 +60,22 @@ describe('GlobTool', () => {
 
   it('should handle search path', async () => {
     const tool = new GlobTool(mockCmdEnv);
-    vi.mocked(mockCmdEnv.runCommand).mockResolvedValue({
-      command: 'find src/components -type f',
-      stdout: 'src/components/button.tsx',
-      stderr: '',
-      exitCode: 0,
-    });
+    vi.mocked(mockCmdEnv.runCommand).mockImplementation(
+      async (command: string) => {
+        if (command.includes('pwd')) {
+          return { command, exitCode: 0, stdout: '/project', stderr: '' };
+        }
+        if (command.includes('while')) {
+          return { command, exitCode: 0, stdout: '', stderr: '' };
+        }
+        return {
+          command,
+          exitCode: 0,
+          stdout: 'src/components/button.tsx',
+          stderr: '',
+        };
+      },
+    );
 
     const output = await tool.execute(
       {
@@ -73,16 +93,35 @@ describe('GlobTool', () => {
 
   it('should exclude gitignored files by default', async () => {
     const tool = new GlobTool(mockCmdEnv);
-    vi.mocked(mockCmdEnv.readFile).mockResolvedValue({
-      path: '.gitignore',
-      content: 'node_modules/\ndist/',
-    });
-    vi.mocked(mockCmdEnv.runCommand).mockResolvedValue({
-      command: 'find . -type f',
-      stdout: 'src/index.ts',
-      stderr: '',
-      exitCode: 0,
-    });
+    vi.mocked(mockCmdEnv.runCommand).mockImplementation(
+      async (command: string) => {
+        if (command.includes('pwd')) {
+          return { command, exitCode: 0, stdout: '/project', stderr: '' };
+        }
+        if (command.includes('while')) {
+          return {
+            command,
+            exitCode: 0,
+            stdout: '/project/.gitignore',
+            stderr: '',
+          };
+        }
+        if (command.startsWith('cat ')) {
+          return {
+            command,
+            exitCode: 0,
+            stdout: 'node_modules/\ndist/',
+            stderr: '',
+          };
+        }
+        return {
+          command,
+          exitCode: 0,
+          stdout: 'src/index.ts',
+          stderr: '',
+        };
+      },
+    );
 
     await tool.execute(
       {
@@ -99,12 +138,14 @@ describe('GlobTool', () => {
 
   it('should not exclude gitignored files when excludeGitIgnored is false', async () => {
     const tool = new GlobTool(mockCmdEnv);
-    vi.mocked(mockCmdEnv.runCommand).mockResolvedValue({
-      command: 'find . -type f',
-      stdout: 'src/index.ts\ndist/index.js',
-      stderr: '',
-      exitCode: 0,
-    });
+    vi.mocked(mockCmdEnv.runCommand).mockImplementation(
+      async (command: string) => ({
+        command,
+        exitCode: 0,
+        stdout: 'src/index.ts\ndist/index.js',
+        stderr: '',
+      }),
+    );
 
     await tool.execute(
       {
@@ -119,6 +160,9 @@ describe('GlobTool', () => {
     );
     expect(mockCmdEnv.runCommand).not.toHaveBeenCalledWith(
       expect.stringContaining('-not -path'),
+    );
+    expect(mockCmdEnv.runCommand).not.toHaveBeenCalledWith(
+      expect.stringContaining('while'),
     );
   });
 
@@ -138,12 +182,22 @@ describe('GlobTool', () => {
 
   it('should throw an error if the find command fails', async () => {
     const tool = new GlobTool(mockCmdEnv);
-    vi.mocked(mockCmdEnv.runCommand).mockResolvedValue({
-      command: 'find . -type f',
-      stdout: '',
-      stderr: 'find: invalid argument',
-      exitCode: 1,
-    });
+    vi.mocked(mockCmdEnv.runCommand).mockImplementation(
+      async (command: string) => {
+        if (command.includes('pwd')) {
+          return { command, exitCode: 0, stdout: '/project', stderr: '' };
+        }
+        if (command.includes('while')) {
+          return { command, exitCode: 0, stdout: '', stderr: '' };
+        }
+        return {
+          command,
+          exitCode: 1,
+          stdout: '',
+          stderr: 'find: invalid argument',
+        };
+      },
+    );
 
     await expect(
       tool.execute(

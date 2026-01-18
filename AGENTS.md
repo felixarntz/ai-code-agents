@@ -138,56 +138,6 @@ Execution environment for coding agents using the "just-bash" simulated bash env
 
 Execution environment for coding agents using Vercel Sandbox.
 
-## Directory Structure
-
-This is an overview of the most important files and directories in the project. It is not comprehensive - there may be additional files and directories not listed here.
-
-```
-/
-├── packages/
-│   ├── ai-code-agents/          # Core SDK library
-│   │   ├── src/
-│   │   │   ├── environments/    # Environment implementations
-│   │   │   ├── tools/           # Tool implementations
-│   │   │   ├── util/            # Utility functions
-│   │   │   ├── agent-creators.ts
-│   │   │   ├── environment-creators.ts
-│   │   │   ├── tool-creators.ts
-│   │   │   ├── types.ts
-│   │   │   └── index.ts
-│   │   ├── package.json         # Package configuration
-│   │   ├── tsconfig.json        # TypeScript configuration
-│   │   ├── tsup.config.ts       # Build configuration
-│   │   └── vitest.config.ts     # Test configuration
-│   ├── cli/                     # CLI application
-│   │   ├── src/
-│   │   │   ├── commands/        # CLI command implementations
-│   │   │   └── cli.ts
-│   │   ├── package.json         # Package configuration
-│   │   ├── tsconfig.json        # TypeScript configuration
-│   │   ├── tsup.config.ts       # Build configuration
-│   │   └── vitest.config.ts     # Test configuration
-│   ├── environment-utils/       # Environment utilities
-│   │   ├── src/
-│   │   │   └── index.ts
-│   │   ├── package.json         # Package configuration
-│   │   ├── tsconfig.json        # TypeScript configuration
-│   │   ├── tsup.config.ts       # Build configuration
-│   │   └── vitest.config.ts     # Test configuration
-│   └── just-bash/               # Just Bash environment
-│       ├── src/
-│       │   └── index.ts
-│       ├── package.json         # Package configuration
-│       ├── tsconfig.json        # TypeScript configuration
-│       ├── tsup.config.ts       # Build configuration
-│       └── vitest.config.ts     # Test configuration
-├── .clinerules/                 # Cline AI assistant rules
-├── eslint.config.js             # ESLint configuration
-├── tsconfig.json                # Root TypeScript config
-├── pnpm-workspace.yaml          # pnpm workspace definition
-└── package.json                 # Root package configuration
-```
-
 ## Git Repo
 
 The main branch for this project is called **main**.

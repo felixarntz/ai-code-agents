@@ -42,16 +42,16 @@
   ],
   "dependencies": {
     "@ai-code-agents/just-bash": "workspace:*",
-    "@commander-js/extra-typings": "^13.0.0",
+    "@commander-js/extra-typings": "^13.1.0",
     "@felixarntz/cli-utils": "^0.1.1",
     "ai-code-agents": "workspace:*",
-    "commander": "^13.0.0",
+    "commander": "^13.1.0",
     "dotenv": "^16.6.1"
   },
   "devDependencies": {
-    "tsup": "^8.5.0",
-    "typescript": "^5.3.3",
-    "vitest": "^3.1.1"
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   },
   "scripts": {
     "build": "tsup",

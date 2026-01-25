@@ -46,12 +46,12 @@
   ],
   "dependencies": {
     "@ai-code-agents/environment-utils": "workspace:*",
-    "just-bash": "^1.4.2"
+    "just-bash": "^1.5.4"
   },
   "devDependencies": {
-    "tsup": "^8.5.0",
-    "typescript": "^5.3.3",
-    "vitest": "^3.1.1"
+    "tsup": "^8.5.1",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
   },
   "scripts": {
     "build": "tsup",
